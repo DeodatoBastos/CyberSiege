@@ -2,10 +2,13 @@
 from dataclasses import dataclass
 from tower.constants import *
 from tower.states import GameState, StateError
+from tower.sprites import TileSprite          #Eu adicionei esse (Ctrl)
+
 
 # External imports
 import pygame
-
+import os
+from pygame.locals import *   
 
 @dataclass
 class TowerGame:
@@ -69,7 +72,9 @@ class TowerGame:
             clock.tick(DESIRED_FPS)
             all_sprites.draw(self.screen)
             pygame.display.flip()
-            
+
+            #Background render
+            self.screen.blit(background, (0,0))
             #FPS
             clock.tick(DESIRED_FPS)
         self.quit()
@@ -96,14 +101,8 @@ class TowerGame:
         self.screen = screen
         self.set_state(GameState.initialized)
 
-class TileSprite(pygame.sprite.Sprite):
-    def __init__(self):
-        #Image, rect are attributes
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(pygame.Color(0,255,0,255))
-        self.rect = self.image.get_rect()
-        self.rect.center = (200, 200)
 
+
+background = pygame.image.load(os.path.join("tower","assets", "sprites", "map01.png"))
 game = TowerGame.create(TowerGame)
 game.start_game()
