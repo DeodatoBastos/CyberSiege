@@ -16,11 +16,11 @@ class TowerGame:
     state: GameState
 
     @classmethod
-    def create(cls, fullscreen=False):
+    def create(cls, fullsc=False):
         game = cls(
             screen=None,
             screen_rect=SCREENRECT,
-            fullscreen=fullscreen,
+            fullscreen=fullsc,
             state=GameState.initializing
         )
         game.init()
@@ -43,9 +43,16 @@ class TowerGame:
     def start_game(self):
         self.assert_state_is(GameState.initialized)
         self.set_state(GameState.main_menu)
-        self.loop()
 
-    def loop(self):
+        #Initializing sprites
+        allSprites = pygame.sprite.Group()
+        tile = TileSprite()
+        allSprites.add(tile)
+        self.loop(allSprites)
+        print(allSprites)
+
+    def loop(self,all_sprites):
+        clock = pygame.time.Clock()
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
                 # pass control to the game menu's loop
@@ -56,6 +63,15 @@ class TowerGame:
             elif self.state == GameState.game_playing:
                 # ... etc ...
                 pass
+
+            #Rendering and updating sprites
+            all_sprites.update()
+            clock.tick(DESIRED_FPS)
+            all_sprites.draw(self.screen)
+            pygame.display.flip()
+            
+            #FPS
+            clock.tick(DESIRED_FPS)
         self.quit()
 
     def quit(self):
@@ -64,7 +80,7 @@ class TowerGame:
     def init(self):
         self.assert_state_is(GameState.initializing)
         pygame.init()
-        window_style = pygame.FULLSCREEN if self.fullscreen else 0
+        window_style = pygame.RESIZABLE #pygame.FULLSCREEN if self.fullscreen else 0
         # We want 32 bits of color depth
         bit_depth = pygame.display.mode_ok(self.screen_rect.size, window_style, 32)
         screen = pygame.display.set_mode(self.screen_rect.size, window_style, bit_depth)
@@ -79,3 +95,15 @@ class TowerGame:
         pygame.font.init()
         self.screen = screen
         self.set_state(GameState.initialized)
+
+class TileSprite(pygame.sprite.Sprite):
+    def __init__(self):
+        #Image, rect are attributes
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((50, 50))
+        self.image.fill(pygame.Color(0,255,0,255))
+        self.rect = self.image.get_rect()
+        self.rect.center = (200, 200)
+
+game = TowerGame.create(TowerGame)
+game.start_game()
