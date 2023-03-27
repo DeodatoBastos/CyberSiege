@@ -1,4 +1,5 @@
 import pygame
+
 class TileSprite(pygame.sprite.Sprite):
     def __init__(self):
         #Image, rect are attributes
