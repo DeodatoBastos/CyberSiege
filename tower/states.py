@@ -1,5 +1,6 @@
 import enum
 
+
 class GameState(enum.Enum):
     """
     Enum for the Game's State Machine. Every state represents a

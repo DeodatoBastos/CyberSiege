@@ -1,9 +1,9 @@
 # Local imports
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from tower.constants import *
 from tower.states import GameState, StateError
-from tower.sprites import TileSprite
-
+from tower.resources import *
+# from tower.GameStates import *
 
 # External imports
 import pygame
@@ -19,6 +19,7 @@ class TowerGame:
     fullscreen: bool
     state: GameState
     background: pygame.image
+    # game_menu: GameLoop = field(init=False, default=None)
 
     @classmethod
     def create(cls, fullsc=False):
@@ -62,7 +63,7 @@ class TowerGame:
         clock = pygame.time.Clock()
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
-                # pass control to the game menu's loop
+                # self.game_menu.loop()
                 pass
             elif self.state == GameState.map_editing:
                 # ... etc ...
@@ -104,4 +105,5 @@ class TowerGame:
         )
         pygame.font.init()
         self.screen = screen
+        # self.game_menu = GameMenu(game=self)
         self.set_state(GameState.initialized)
