@@ -49,3 +49,25 @@ class GameMenu(GameLoop):
 
 class GameEditing(GameLoop):
     pass
+
+#Ctrl
+from tower.GUI import button
+class MainGame(GameLoop):
+    def loop(self, game):
+        self.state = game.state
+        clock = pygame.time.Clock()
+        self.screen.blit(IMAGE_SPRITES[(False, False, "background")], (0, 0))
+
+        #Defining the buttons (tower selection)
+        antivirus_button = button((0,255,0),150,150,100,50,'antivirus')
+        allButtons = [antivirus_button]
+
+        while self.state == GameState.game_playing:
+            self.handle_events(game)
+            pygame.display.flip()
+            pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
+            clock.tick(DESIRED_FPS)
+
+            #Renderização dos buttons
+            for b in allButtons:
+                b.draw(self.screen,(0,0,0))
