@@ -60,7 +60,7 @@ class TowerGame:
         clock = pygame.time.Clock()
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
-                self.game_menu.loop()
+                self.game_menu.loop(game=self)
             elif self.state == GameState.map_editing:
                 # ... etc ...
                 pass
