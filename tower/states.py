@@ -23,6 +23,8 @@ class GameState(enum.Enum):
     main_menu = "main_menu"
     # The game engine is rendering the game ended screen.
     game_ended = "game_ended"
+    # The game engine is rendering the help screen.
+    help_options = "help_options"
     # The game engine is exiting and is unwinding
     quitting = "quitting"
 
