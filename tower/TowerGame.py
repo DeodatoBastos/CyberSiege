@@ -118,5 +118,5 @@ class TowerGame:
             
         self.game_menu = GameMenu.create(self.screen, GameState.main_menu)
         self.game_playing = GamePlaying(screen=self.screen, state=GameState.game_playing)
-        self.help_options = HelpOptions(screen=self.screen, state=GameState.help_options)
+        self.help_options = HelpOptions.create(self.screen, GameState.help_options)
         self.set_state(GameState.initialized)
