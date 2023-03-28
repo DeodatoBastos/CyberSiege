@@ -48,15 +48,9 @@ class TowerGame:
     def start_game(self):
         self.assert_state_is(GameState.initialized)
         self.set_state(GameState.main_menu)
+        self.loop()
 
-        # Initializing sprites
-        allSprites = pygame.sprite.Group()
-        tile = TileSprite()
-        allSprites.add(tile)
-        self.loop(allSprites)
-        print(allSprites)
-
-    def loop(self, all_sprites):
+    def loop(self):
         clock = pygame.time.Clock()
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
@@ -68,14 +62,6 @@ class TowerGame:
                 # ... etc ...
                 pass
 
-            # Rendering and updating sprites
-            all_sprites.update()
-            clock.tick(DESIRED_FPS)
-            all_sprites.draw(self.screen)
-            pygame.display.flip()
-
-            # FPS
-            clock.tick(DESIRED_FPS)
         self.quit()
 
     def quit(self):
