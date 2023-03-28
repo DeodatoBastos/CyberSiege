@@ -27,3 +27,7 @@ def import_sound(asset_name: str):
     """
     with load("tower.assets.audio", asset_name) as resource:
         return pygame.mixer.Sound(resource)
+
+
+def get_font(size):
+    return pygame.font.Font("tower/assets/fonts/font.ttf", size)
