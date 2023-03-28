@@ -51,7 +51,6 @@ class TowerGame:
         self.loop()
 
     def loop(self):
-        clock = pygame.time.Clock()
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
                 self.game_menu.loop(game=self)

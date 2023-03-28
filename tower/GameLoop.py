@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import pygame
 from tower.constants import *
 from tower.states import GameState
+from tower.enemies.sql_injection import Sql_Injection
 
 @dataclass
 class GameLoop:
@@ -22,6 +23,9 @@ class GameLoop:
                 game.set_state(GameState.quitting)
                 self.state = GameState.quitting
             # Delegate the event to a sub-event handler `handle_event`
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                print(pos)
             self.handle_event(event)
 
 
@@ -39,11 +43,15 @@ class GameMenu(GameLoop):
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
-        self.screen.blit(IMAGE_SPRITES[(False, False, "background")], (0, 0))
+        sql = Sql_Injection()
         while self.state == GameState.main_menu:
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
+            self.screen.blit(IMAGE_SPRITES[(False, False, "background")], (0, 0))
+            sql.draw(game.screen)
+            sql.draw_health_bar(game.screen)
+            sql.move()
             clock.tick(DESIRED_FPS)
 
 
