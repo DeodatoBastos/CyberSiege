@@ -10,7 +10,8 @@ SPRITES = {
     # "game_logo": "game_logo.png",
     # "land": "land.png",
     # "road": "road.png",
-    "background": "map01.png"
+    "background": "map01.png",
+    "antivirus": "antivirus.png"
 }
 
 IMAGE_SPRITES = {}

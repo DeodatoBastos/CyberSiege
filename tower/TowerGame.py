@@ -19,6 +19,7 @@ class TowerGame:
     fullscreen: bool
     state: GameState
     game_menu: GameLoop = field(init=False, default=None)
+    game_play: GameLoop = field(init=False, default=None)
 
     @classmethod
     def create(cls, fullsc=False):
@@ -49,33 +50,23 @@ class TowerGame:
         self.assert_state_is(GameState.initialized)
         self.set_state(GameState.main_menu)
 
-        # Initializing sprites
-        allSprites = pygame.sprite.Group()
-        tile = TileSprite()
-        allSprites.add(tile)
-        self.loop(allSprites)
-        print(allSprites)
+        self.loop()
 
-    def loop(self, all_sprites):
+    def loop(self):
         clock = pygame.time.Clock()
         while self.state != GameState.quitting:
+
             if self.state == GameState.main_menu:
-                self.game_menu.loop()
+                self.game_menu.loop(self)
+
             elif self.state == GameState.map_editing:
                 # ... etc ...
                 pass
+
             elif self.state == GameState.game_playing:
-                # ... etc ...
+                self.game_play.loop(self)
                 pass
 
-            # Rendering and updating sprites
-            all_sprites.update()
-            clock.tick(DESIRED_FPS)
-            all_sprites.draw(self.screen)
-            pygame.display.flip()
-
-            # FPS
-            clock.tick(DESIRED_FPS)
         self.quit()
 
     def quit(self):
@@ -115,4 +106,5 @@ class TowerGame:
             channels[channel_name].set_volume(1.0)
             
         self.game_menu = GameMenu(screen=self.screen, state=self.state)
+        self.game_play = MainGame(screen=self.screen, state=self.state)
         self.set_state(GameState.initialized)
