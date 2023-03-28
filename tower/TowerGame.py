@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from tower.constants import *
 from tower.states import GameState, StateError
 from tower.resources import *
-# from tower.GameStates import *
+from tower.GameLoop import *
 
 # External imports
 import pygame
@@ -18,8 +18,7 @@ class TowerGame:
     screen_rect: pygame.Rect
     fullscreen: bool
     state: GameState
-    background: pygame.image
-    # game_menu: GameLoop = field(init=False, default=None)
+    game_menu: GameLoop = field(init=False, default=None)
 
     @classmethod
     def create(cls, fullsc=False):
@@ -27,9 +26,7 @@ class TowerGame:
             screen=None,
             screen_rect=SCREENRECT,
             fullscreen=fullsc,
-            state=GameState.initializing,
-            background=pygame.image.load(os.path.join(
-                "tower", "assets", "sprites", "map01.png"))
+            state=GameState.initializing
         )
         game.init()
         return game
@@ -63,8 +60,7 @@ class TowerGame:
         clock = pygame.time.Clock()
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
-                # self.game_menu.loop()
-                pass
+                self.game_menu.loop()
             elif self.state == GameState.map_editing:
                 # ... etc ...
                 pass
@@ -78,8 +74,6 @@ class TowerGame:
             all_sprites.draw(self.screen)
             pygame.display.flip()
 
-            # Background render
-            self.screen.blit(self.background, (0, 0))
             # FPS
             clock.tick(DESIRED_FPS)
         self.quit()
@@ -120,5 +114,5 @@ class TowerGame:
             # Configure the volume here.
             channels[channel_name].set_volume(1.0)
             
-        # self.game_menu = GameMenu(game=self)
+        self.game_menu = GameMenu(screen=self.screen, state=self.state)
         self.set_state(GameState.initialized)

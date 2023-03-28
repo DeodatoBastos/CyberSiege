@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 import pygame
 from tower.constants import *
-    
+from tower.states import GameState
 
 @dataclass
 class GameLoop:
-    game: TowerGame
+    screen: pygame.Surface
+    state: GameState
 
     def handle_events(self):
         """
@@ -31,23 +32,11 @@ class GameLoop:
         Handles a singular event, `event`.
         """
 
-    # Convenient shortcuts.
-    def set_state(self, new_state):
-        self.game.set_state(new_state)
-
-    @property
-    def screen(self):
-        return self.game.screen
-
-    @property
-    def state(self):
-        return self.game.state
-
 
 class GameMenu(GameLoop):
     def loop(self):
         clock = pygame.time.Clock()
-        self.screen.blit(IMAGE_SPRITES[(False, False, "backdrop")], (0, 0))
+        self.screen.blit(IMAGE_SPRITES[(False, False, "background")], (0, 0))
         while self.state == GameState.main_menu:
             self.handle_events()
             pygame.display.flip()
