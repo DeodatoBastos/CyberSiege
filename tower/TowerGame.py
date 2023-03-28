@@ -105,5 +105,20 @@ class TowerGame:
         )
         pygame.font.init()
         self.screen = screen
+
+        # initializing sprites
+        for sprite_index, sprite_name in SPRITES.items():
+            img = import_image(sprite_name)
+            for flipped_x in (True, False):
+                for flipped_y in (True, False):
+                    new_img = pygame.transform.flip(img, flip_x=flipped_x, flip_y=flipped_y)
+                    IMAGE_SPRITES[(flipped_x, flipped_y, sprite_index)] = new_img
+
+        # initializing audio
+        for channel_id, channel_name in enumerate(channels):
+            channels[channel_name] = pygame.mixer.Channel(channel_id)
+            # Configure the volume here.
+            channels[channel_name].set_volume(1.0)
+            
         # self.game_menu = GameMenu(game=self)
         self.set_state(GameState.initialized)
