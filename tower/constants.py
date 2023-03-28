@@ -1,7 +1,7 @@
 import pygame
 from tower.resources import import_image
 
-DESIRED_FPS = 60
+DESIRED_FPS = 90
 # Replace width and height with the desired size of the game window.
 SCREENRECT = pygame.Rect(0, 0, 960, 640)
 MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT = 1, 2, 3
@@ -11,7 +11,9 @@ SPRITES = {
     # "land": "land.png",
     # "road": "road.png",
     "background": "map01.png",
-    "antivirus": "antivirus.png"
+    "antivirus": "antivirus.png",
+    "firewall": "firewall.png",
+    "2FA": "2FA.png"
 }
 
 IMAGE_SPRITES = {}

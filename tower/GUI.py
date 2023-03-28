@@ -2,14 +2,14 @@ import pygame
 from tower.constants import *
 
 class button:
-    def __init__(self, color, x,y,width,height,imageStr,resize, text=''):
-        self.color = color
+    def __init__(self, tower, x,y,width,height,resize, text=''):
+        self.tower = tower
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.text = text
-        self.image = imageStr
+        self.image = tower.imageStr
         self.resize = resize
 
     def draw(self,win,outline=None):
@@ -17,7 +17,7 @@ class button:
         if outline:
             pygame.draw.rect(win, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
             
-        #pygame.draw.rect(win, self.color, (self.x,self.y,self.width,self.height),0)           ONLY USED TO DEBUG THE BUTTON HITBOX
+        #pygame.draw.rect(win, (255,0,0), (self.x,self.y,self.width,self.height),0)           ONLY USED TO DEBUG THE BUTTON HITBOX
     
         if self.text != '':
             font = pygame.font.SysFont('comicsans', 60)

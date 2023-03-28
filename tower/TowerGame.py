@@ -48,7 +48,7 @@ class TowerGame:
 
     def start_game(self):
         self.assert_state_is(GameState.initialized)
-        self.set_state(GameState.main_menu)
+        self.set_state(GameState.game_playing)
 
         self.loop()
 
