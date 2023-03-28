@@ -17,6 +17,12 @@ def load(module_path: str, name: str):
 
 
 def import_image(asset_name: str):
+    """
+    Load a image from folder sprites in assets
+
+    Args:
+        asset_name (str): image name
+    """
     with load("tower.assets.sprites", asset_name) as resource:
         return pygame.image.load(resource).convert_alpha()
 
@@ -30,4 +36,7 @@ def import_sound(asset_name: str):
 
 
 def get_font(size):
+    """
+    Returns the game font
+    """
     return pygame.font.Font("tower/assets/fonts/font.ttf", size)

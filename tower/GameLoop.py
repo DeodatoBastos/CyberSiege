@@ -42,6 +42,9 @@ class GameLoop:
 
 @dataclass
 class GameMenu(GameLoop):
+    """
+    Handle with game menu loop
+    """
     play_button: Button
     help_button: Button
     quit_button: Button
@@ -65,6 +68,7 @@ class GameMenu(GameLoop):
 
 
     def loop(self, game):
+        self.state = game.state
         clock = pygame.time.Clock()
         self.screen.blit(IMAGE_SPRITES[(False, False, "menu")], (0, 0))
         menu_text = get_font(80).render("Cyber Siege", True, "#b68f40")
@@ -72,6 +76,8 @@ class GameMenu(GameLoop):
         self.screen.blit(menu_text, menu_rect)
 
         while self.state == GameState.main_menu:
+            mouse_pos = pygame.mouse.get_pos()
+
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
@@ -103,7 +109,11 @@ class GameEditing(GameLoop):
 
 
 class GamePlaying(GameLoop):
-     def loop(self, game):
+    """
+    Handle with playing loop
+    """
+    def loop(self, game):
+        self.state = game.state
         clock = pygame.time.Clock()
         self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
 
@@ -118,8 +128,27 @@ class GamePlaying(GameLoop):
             clock.tick(DESIRED_FPS)
 
 
+@dataclass
 class HelpOptions(GameLoop):
-     def loop(self, game):
+    """
+    Handle with help options menu
+    """
+    back_button: Button
+
+    @classmethod
+    def create(cls, screen, state):
+        help_options = cls(
+            screen = screen,
+            state = state,
+            back_button = Button(image=None, pos=(480, 600), 
+                            text_input="Back", font=get_font(25), base_color="White",
+                            hovering_color="Green")
+        )
+        return help_options
+
+
+    def loop(self, game):
+        self.state = game.state
         clock = pygame.time.Clock()
         self.screen.fill("black")
         help_text = get_font(25).render("This is the Help screen.", True, "White")
@@ -127,7 +156,21 @@ class HelpOptions(GameLoop):
         self.screen.blit(help_text, help_rect)
 
         while self.state == GameState.help_options:
+            mouse_pos = pygame.mouse.get_pos()
+
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
             clock.tick(DESIRED_FPS)
+
+            self.back_button.changeColor(mouse_pos)
+            self.back_button.update(self.screen)
+
+
+    def handle_event(self, event, game):
+        mouse_pos = pygame.mouse.get_pos()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.back_button.checkForInput(mouse_pos):
+                game.set_state(GameState.main_menu)
+                self.state = GameState.main_menu
