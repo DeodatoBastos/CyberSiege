@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import pygame
 from tower.constants import *
-
+    
 
 @dataclass
 class GameLoop:
