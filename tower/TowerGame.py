@@ -19,6 +19,8 @@ class TowerGame:
     fullscreen: bool
     state: GameState
     game_menu: GameLoop = field(init=False, default=None)
+    game_playing: GameLoop = field(init=False, default=None)
+    help_options: GameLoop = field(init=False, default=None)
 
     @classmethod
     def create(cls, fullsc=False):
@@ -62,11 +64,11 @@ class TowerGame:
             if self.state == GameState.main_menu:
                 self.game_menu.loop(game=self)
             elif self.state == GameState.map_editing:
-                # ... etc ...
                 pass
             elif self.state == GameState.game_playing:
-                # ... etc ...
-                pass
+                self.game_playing.loop(game=self)
+            elif self.state == GameState.help_options:
+                self.help_options.loop(game=self)
 
             # Rendering and updating sprites
             all_sprites.update()
@@ -114,5 +116,7 @@ class TowerGame:
             # Configure the volume here.
             channels[channel_name].set_volume(1.0)
             
-        self.game_menu = GameMenu(screen=self.screen, state=self.state)
+        self.game_menu = GameMenu.create(self.screen, GameState.main_menu)
+        self.game_playing = GamePlaying(screen=self.screen, state=GameState.game_playing)
+        self.help_options = HelpOptions(screen=self.screen, state=GameState.help_options)
         self.set_state(GameState.initialized)
