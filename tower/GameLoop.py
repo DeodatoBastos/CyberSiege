@@ -4,7 +4,7 @@ from tower.enemies.sql_injection import Sql_Injection
 from tower.button import Button
 from tower.resources import get_font
 from tower.towers import antivirus, firewall, twoFactorAuth, Towers
-
+from tower.map import map1
 from dataclasses import dataclass
 import pygame
 
@@ -121,6 +121,7 @@ class GamePlaying(GameLoop):
     balance : int
     grabbing : bool
     grabbed : bool
+    board : map1
 
     @classmethod
     def create(cls, screen, state):
@@ -134,10 +135,23 @@ class GamePlaying(GameLoop):
             allTowers = [],
             balance = 100,
             grabbing = False,
-            grabbed = False
+            grabbed = False,
+            board = map1()
         )
         return game_playing
-
+    
+    def validatePlacing(self,mouse_pos):
+        #map mouse position to corresponding square, returns True/False + the correct (x,y) position to place the tower
+        col_index = mouse_pos[0]//32
+        line_index = mouse_pos[1]//32
+        if self.board.placeable[line_index][col_index] == 0:
+            return False, None
+        
+        else:
+            self.board.placeable[line_index][col_index] = 0
+            offset = 0
+            return True, (32*col_index + 16 + offset, 32*line_index + 16 + offset)
+        
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
@@ -158,15 +172,18 @@ class GamePlaying(GameLoop):
             for btn in self.allButtons:
                 btn.update(self.screen)
 
-            # Render deployed towers
+            # Render deployed towers along with a square to show they are placed
             for element in self.allTowers:
+                square = pygame.Surface((32,32))
+                square = square.convert_alpha()
+                square.fill((100,255,100,128))
+                self.screen.blit(square,(element[1][0]-16,element[1][1]-16,32,32))
                 self.screen.blit(pygame.transform.scale(element[0].img, (32,32)), (element[1][0] - 16, element[1][1] - 16))
 
             # while grabbing something, render it at mouse position each frame
             if (self.grabbing):
                 self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
                 
-
     def handle_event(self, event, game):
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 3):
             self.grabbing = False
@@ -189,8 +206,12 @@ class GamePlaying(GameLoop):
 
         elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing == True) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
-            self.allTowers.append([self.grabbed.__class__(), pygame.mouse.get_pos()])
-            self.balance -= self.grabbed.cost
+            check, placePos = self.validatePlacing(pygame.mouse.get_pos())
+            if (check):
+                self.allTowers.append([self.grabbed.__class__(), placePos])
+                self.balance -= self.grabbed.cost
+            
+            
 
 @dataclass
 class HelpOptions(GameLoop):

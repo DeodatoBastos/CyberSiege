@@ -5,7 +5,9 @@ class Towers:
     damage : int
     recharge_time : int
     cost : int
-    range : int 
+    range : int
+    #Tem que ter um script pro ataque tbm
+
 
 class antivirus(Towers):
     img = pygame.transform.scale(
