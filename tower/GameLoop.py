@@ -151,7 +151,24 @@ class GamePlaying(GameLoop):
             self.board.placeable[line_index][col_index] = 0
             offset = 0
             return True, (32*col_index + 16 + offset, 32*line_index + 16 + offset)
-        
+    
+    def renderThings(self):
+        # Rendering the buttons
+        for btn in self.allButtons:
+            btn.update(self.screen)
+
+        # Render deployed towers along with a square to show they are placed
+        for element in self.allTowers:
+            square = pygame.Surface((32,32))
+            square = square.convert_alpha()
+            square.fill((100,255,100,128))
+            self.screen.blit(square,(element[1][0]-16,element[1][1]-16,32,32))
+            self.screen.blit(pygame.transform.scale(element[0].img, (32,32)), (element[1][0] - 16, element[1][1] - 16))
+
+        # while grabbing something, render it at mouse position each frame
+        if (self.grabbing):
+            self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
+
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
@@ -167,22 +184,7 @@ class GamePlaying(GameLoop):
             sql.draw_health_bar(game.screen)
             sql.move()
             clock.tick(DESIRED_FPS)
-
-            # Rendering the buttons
-            for btn in self.allButtons:
-                btn.update(self.screen)
-
-            # Render deployed towers along with a square to show they are placed
-            for element in self.allTowers:
-                square = pygame.Surface((32,32))
-                square = square.convert_alpha()
-                square.fill((100,255,100,128))
-                self.screen.blit(square,(element[1][0]-16,element[1][1]-16,32,32))
-                self.screen.blit(pygame.transform.scale(element[0].img, (32,32)), (element[1][0] - 16, element[1][1] - 16))
-
-            # while grabbing something, render it at mouse position each frame
-            if (self.grabbing):
-                self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
+            self.renderThings()
                 
     def handle_event(self, event, game):
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 3):
