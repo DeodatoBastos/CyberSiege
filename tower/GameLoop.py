@@ -116,12 +116,13 @@ class GamePlaying(GameLoop):
         self.state = game.state
         clock = pygame.time.Clock()
         self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
+        sql = Sql_Injection()
 
         while self.state == GameState.game_playing:
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
-            self.screen.blit(IMAGE_SPRITES[(False, False, "background")], (0, 0))
+            self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
             sql.draw(game.screen)
             sql.draw_health_bar(game.screen)
             sql.move()
