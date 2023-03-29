@@ -20,7 +20,6 @@ class TowerGame:
     state: GameState
     game_menu: GameLoop = field(init=False, default=None)
     game_playing: GameLoop = field(init=False, default=None)
-    game_play: GameLoop = field(init=False, default=None)
     help_options: GameLoop = field(init=False, default=None)
 
     @classmethod
@@ -58,12 +57,9 @@ class TowerGame:
 
             if self.state == GameState.main_menu:
                 self.game_menu.loop(game=self)
-
             elif self.state == GameState.map_editing:
                 pass
-
             elif self.state == GameState.game_playing:
-                self.game_play.loop(game=self)
                 self.game_playing.loop(game=self)
             elif self.state == GameState.help_options:
                 self.help_options.loop(game=self)
@@ -92,7 +88,7 @@ class TowerGame:
         pygame.font.init()
         self.screen = screen
 
-        #initializing sprites
+        # initializing sprites
         for sprite_index, sprite_name in SPRITES.items():
             img = import_image(sprite_name)
             for flipped_x in (True, False):
@@ -106,7 +102,6 @@ class TowerGame:
             # Configure the volume here.
             channels[channel_name].set_volume(1.0)
 
-        self.game_play = MainGame(screen=self.screen, state=self.state)
         self.game_menu = GameMenu.create(self.screen, GameState.main_menu)
         self.game_playing = GamePlaying(screen=self.screen, state=GameState.game_playing)
         self.help_options = HelpOptions.create(self.screen, GameState.help_options)

@@ -118,8 +118,11 @@ class GamePlaying(GameLoop):
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
-        self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
         sql = Sql_Injection()
+
+        #Defining the buttons (tower selection)
+        antivirus_button = button((0, 255, 0), 150, 150, 100, 50, 'antivirus')
+        allButtons = [antivirus_button]
 
         while self.state == GameState.game_playing:
             self.handle_events(game)
@@ -130,6 +133,11 @@ class GamePlaying(GameLoop):
             sql.draw_health_bar(game.screen)
             sql.move()
             clock.tick(DESIRED_FPS)
+
+            #render all buttons
+            for btn in allButtons:
+                btn.draw(self.screen,(0,0,0))
+
 
 
 @dataclass
@@ -178,25 +186,3 @@ class HelpOptions(GameLoop):
             if self.back_button.checkForInput(mouse_pos):
                 game.set_state(GameState.main_menu)
                 self.state = GameState.main_menu
-
-
-class MainGame(GameLoop):
-    def loop(self, game):
-        self.state = game.state
-        clock = pygame.time.Clock()
-        self.screen.blit(IMAGE_SPRITES[(False, False, "background")], (0, 0))
-
-        #Defining the buttons (tower selection)
-        antivirus_button = button((0,255,0),150,150,100,50,'antivirus')
-        allButtons = [antivirus_button]
-
-        while self.state == GameState.game_playing:
-            self.handle_events(game)
-            pygame.display.flip()
-            pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
-            clock.tick(DESIRED_FPS)
-
-            #render all buttons
-            for b in allButtons:
-                b.draw(self.screen,(0,0,0))
-
