@@ -18,8 +18,10 @@ class TowerGame:
     screen_rect: pygame.Rect
     fullscreen: bool
     state: GameState
-    game_menu: GameLoop = field(init=False, default=None) #usa pra chamar o loop do estado do menu principal
-    game_play: GameLoop = field(init=False, default=None) #usa pra chamar o loop do estado do jogo principal
+    game_menu: GameLoop = field(init=False, default=None)
+    game_playing: GameLoop = field(init=False, default=None)
+    game_play: GameLoop = field(init=False, default=None)
+    help_options: GameLoop = field(init=False, default=None)
 
     @classmethod
     def create(cls, fullsc=False):
@@ -58,12 +60,13 @@ class TowerGame:
                 self.game_menu.loop(game=self)
 
             elif self.state == GameState.map_editing:
-                # ... etc ...
                 pass
 
             elif self.state == GameState.game_playing:
                 self.game_play.loop(game=self)
-                pass
+                self.game_playing.loop(game=self)
+            elif self.state == GameState.help_options:
+                self.help_options.loop(game=self)
 
         self.quit()
 
@@ -102,7 +105,9 @@ class TowerGame:
             channels[channel_name] = pygame.mixer.Channel(channel_id)
             # Configure the volume here.
             channels[channel_name].set_volume(1.0)
-            
-        self.game_menu = GameMenu(screen=self.screen, state=self.state)
+
         self.game_play = MainGame(screen=self.screen, state=self.state)
+        self.game_menu = GameMenu.create(self.screen, GameState.main_menu)
+        self.game_playing = GamePlaying(screen=self.screen, state=GameState.game_playing)
+        self.help_options = HelpOptions.create(self.screen, GameState.help_options)
         self.set_state(GameState.initialized)

@@ -7,10 +7,9 @@ SCREENRECT = pygame.Rect(0, 0, 960, 640)
 MOUSE_LEFT, MOUSE_MIDDLE, MOUSE_RIGHT = 1, 2, 3
 
 SPRITES = {
-    # "game_logo": "game_logo.png",
-    # "land": "land.png",
-    # "road": "road.png",
-    "background": "map01.png"
+    "map01": "map01.png",
+    "menu": "menu.png",
+    "btn": "button.png",
 }
 
 IMAGE_SPRITES = {}
