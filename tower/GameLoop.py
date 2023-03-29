@@ -141,24 +141,8 @@ class GamePlaying(GameLoop):
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
-
         sql = Sql_Injection()
-
-        # Defining Tower templates for the buttons to reefer cause i dunno a better way to do it
-        #av_template = antivirus()
-        #firewall_template = firewall()
-        #twoFA_template = twoFactorAuth()
-
-        # Defining the buttons (tower selection)
-        #antivirus_button = button(av_template, 896 + 5, 32, 64,64, 54,'')
-        #firewall_button = button(firewall_template, 896 + 5, 128, 64,64, 54,'')
-        #twoFA_button = button(twoFA_template, 896 + 5, 224, 64,64, 54,'')
         self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button]
-
-        # Grabbing tower state
-
-        # money
-        #balance = 100
 
         while self.state == GameState.game_playing:
             self.handle_events(game)
