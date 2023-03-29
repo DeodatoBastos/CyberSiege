@@ -12,7 +12,7 @@ SPRITES = {
     "2FA": "2FA.png",
     "map01": "map01.png",
     "menu": "menu.png",
-    "btn": "button.png",
+    #"btn": "button.png",
 }
 
 IMAGE_SPRITES = {}

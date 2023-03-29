@@ -103,6 +103,6 @@ class TowerGame:
             channels[channel_name].set_volume(1.0)
 
         self.game_menu = GameMenu.create(self.screen, GameState.main_menu)
-        self.game_playing = GamePlaying(screen=self.screen, state=GameState.game_playing)
+        self.game_playing = GamePlaying.create(screen=self.screen, state=GameState.game_playing)
         self.help_options = HelpOptions.create(self.screen, GameState.help_options)
         self.set_state(GameState.initialized)
