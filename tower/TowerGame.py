@@ -52,9 +52,9 @@ class TowerGame:
         self.set_state(GameState.main_menu)
         self.loop()
 
+
     def loop(self):
         while self.state != GameState.quitting:
-
             if self.state == GameState.main_menu:
                 self.game_menu.loop(game=self)
             elif self.state == GameState.map_editing:

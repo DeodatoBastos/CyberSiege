@@ -4,6 +4,7 @@ from tower.enemies.sql_injection import Sql_Injection
 from tower.button import Button
 from tower.resources import get_font
 from tower.GUI import button
+from tower.towers import antivirus, firewall, twoFactorAuth
 
 from dataclasses import dataclass
 import pygame
@@ -112,20 +113,32 @@ class GameEditing(GameLoop):
 
 
 class GamePlaying(GameLoop):
-    """
-    Handle with playing loop
-    """
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
+
         sql = Sql_Injection()
 
-        #Defining the buttons (tower selection)
-        antivirus_button = button((0, 255, 0), 150, 150, 100, 50, 'antivirus')
-        allButtons = [antivirus_button]
+        # Defining Tower templates for the buttons to reefer cause i dunno a better way to do it
+        av_template = antivirus()
+        firewall_template = firewall()
+        twoFA_template = twoFactorAuth()
+
+        # Defining the buttons (tower selection)
+        antivirus_button = button(av_template, 896 + 5, 32, 64,64, 54,'')
+        firewall_button = button(firewall_template, 896 + 5, 128, 64,64, 54,'')
+        twoFA_button = button(twoFA_template, 896 + 5, 224, 64,64, 54,'')
+        allButtons = [antivirus_button, firewall_button, twoFA_button]
+
+        # Grabbing tower state
+        grabbing = False
+        grabbed = None
+        allTowers = []
+
+        # money
+        balance = 100
 
         while self.state == GameState.game_playing:
-            self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
@@ -134,10 +147,43 @@ class GamePlaying(GameLoop):
             sql.move()
             clock.tick(DESIRED_FPS)
 
-            #render all buttons
+            # Rendering the buttons
             for btn in allButtons:
-                btn.draw(self.screen,(0,0,0))
+                btn.draw(self.screen)
 
+            # Render deployed towers
+            for element in allTowers:
+                self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, element[0].imageStr)], (32,32)), (element[1][0] - 16, element[1][1] - 16))
+
+            # while grabbing something, render it at mouse position each frame
+            if (grabbing):
+                self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, grabbed.imageStr)], (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
+
+            # Search for inputs
+            for event in pygame.event.get():
+                if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 3):
+                    grabbing = False
+                    grabbed = None
+
+                if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and grabbing == False):
+                    # check if the user click in any button
+                    for btn in allButtons:
+                        if btn.isOver(pygame.mouse.get_pos()):
+                            #Grab the correct sprite
+                            grabbing = True
+                            grabbed = btn.tower
+
+                elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and grabbing == True) and balance >= grabbed.cost:
+                    # Verify if the drop is in an allowed block and drop the tower
+                    allTowers.append([grabbed, pygame.mouse.get_pos()])
+                    balance -= grabbed.cost
+
+
+                if (
+                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                ) or event.type == pygame.QUIT:
+                    game.set_state(GameState.quitting)
+                    self.state = GameState.quitting
 
 
 @dataclass
