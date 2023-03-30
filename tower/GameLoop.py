@@ -23,12 +23,12 @@ class GameLoop:
         causing the game window to hang.
         """
         for event in pygame.event.get():
-            if (
-                event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
-            ) or event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 game.set_state(GameState.quitting)
                 self.state = GameState.quitting
 
+            print(self.state)
+            print(game.state)
             # Delegate the event to a sub-event handler `handle_event`
             self.handle_event(event, game)
 
@@ -104,6 +104,20 @@ class GameMenu(GameLoop):
                 game.set_state(GameState.help_options)
                 self.state = GameState.help_options
             if self.quit_button.checkForInput(mouse_pos):
+                game.set_state(GameState.quitting)
+                self.state = GameState.quitting
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                game.set_state(GameState.quitting)
+                self.state = GameState.quitting
+            if event.key == pygame.K_p:
+                game.set_state(GameState.game_playing)
+                self.state = GameState.game_playing
+            if event.key == pygame.K_h:
+                game.set_state(GameState.help_options)
+                self.state = GameState.help_options
+            if event.key == pygame.K_q:
                 game.set_state(GameState.quitting)
                 self.state = GameState.quitting
 
@@ -244,6 +258,15 @@ class HelpOptions(GameLoop):
             if self.forward_page_button.checkForInput(mouse_pos):
                 self.is_first_page = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.is_first_page = True
+                game.set_state(GameState.main_menu)
+                self.state = GameState.main_menu
+            if event.key == pygame.K_LEFT:
+                self.is_first_page = True
+            if event.key == pygame.K_RIGHT:
+                self.is_first_page = False
 
     def draw_first_page(self):
         self.screen.fill("black")
