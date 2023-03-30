@@ -26,8 +26,6 @@ class GameLoop:
                 game.set_state(GameState.quitting)
                 self.state = GameState.quitting
 
-            print(self.state)
-            print(game.state)
             # Delegate the event to a sub-event handler `handle_event`
             self.handle_event(event, game)
 
