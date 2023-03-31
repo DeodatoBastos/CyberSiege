@@ -72,7 +72,7 @@ class TowerGame:
     def init(self):
         self.assert_state_is(GameState.initializing)
         pygame.init()
-        window_style = pygame.RESIZABLE  # pygame.FULLSCREEN if self.fullscreen else 0
+        window_style = 0
         bit_depth = pygame.display.mode_ok(
             self.screen_rect.size, window_style, 32)
         screen = pygame.display.set_mode(
