@@ -10,7 +10,6 @@ class Enemy:
         self.path_pos = 0
         self.x = self.path[0][0]
         self.y = self.path[0][1]
-        self.flipped = False
         self.speed_increase = 2
 
         self.name = None
@@ -74,9 +73,9 @@ class Enemy:
         dirn = (dirn[0]/length * self.speed_increase, dirn[1]/length * self.speed_increase)
 
 
-        if dirn[0] < 0 and not(self.flipped):
-            self.flipped = True
-            self.img = pygame.transform.flip(self.img, True, False)
+        # if dirn[0] < 0 and not(self.flipped):
+        #     self.flipped = True
+        #     self.img = pygame.transform.flip(self.img, True, False)
 
         move_x, move_y = ((self.x + dirn[0]), (self.y + dirn[1]))
 

@@ -1,12 +1,15 @@
 from tower.constants import *
 from tower.states import GameState
 from tower.enemies.sql_injection import Sql_Injection
+from tower.enemies.ddos import DDOS
 from tower.button import Button
 from tower.resources import get_font
 from tower.towers import antivirus, firewall, twoFactorAuth, Towers
 from tower.map import map1
 from dataclasses import dataclass
 import pygame
+import time
+import random
 
 
 @dataclass
@@ -134,6 +137,10 @@ class GamePlaying(GameLoop):
     grabbing : bool
     grabbed : bool
     board : map1
+    number_enemies : list
+    round : int
+    enemies : list
+    timer : int
 
     @classmethod
     def create(cls, screen, state):
@@ -148,7 +155,12 @@ class GamePlaying(GameLoop):
             balance = 100,
             grabbing = False,
             grabbed = False,
-            board = map1()
+            board = map1(),
+            number_enemies = [[10, 5], [20, 10], [30, 20]], # Each row is a round. Each column is the quantity of enemies
+                                                # Right now, the sequence of enemies is SQL, ddos
+            round = 0,
+            enemies = [],
+            timer = 0
         )
         return game_playing
     
@@ -180,21 +192,55 @@ class GamePlaying(GameLoop):
         # while grabbing something, render it at mouse position each frame
         if (self.grabbing):
             self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
+        
+        # Generates waves
+        if sum(self.current_wave) == 0:
+            if len(self.enemies) == 0:
+                self.round += 1
+                self.current_wave = self.number_enemies[self.round]
+                # Uncomment when pause is created
+                # self.pause = True
+                # self.playPauseButton.paused = self.pause
+        else:
+            wave_enemies = [Sql_Injection(), DDOS()]
+            for x in range(len(self.current_wave)):
+                if time.time() - self.timer >= random.randrange(1,6)/3:
+                    self.timer = time.time()
+                    if self.current_wave[x] != 0:
+                        self.enemies.append(wave_enemies[x])
+                        self.current_wave[x] = self.current_wave[x] - 1
+                        break
+        
+        for enemy in self.enemies:
+            enemy.draw(self.screen)
+
+        to_del = []
+        for en in self.enemies:
+            en.move()
+            if en.path_pos >= len(en.path) - 1:
+                to_del.append(en)
+
+        # delete all enemies off the screen
+        for d in to_del:
+            # Remove comment when lives are implemented
+            #self.lives -= 1
+            self.enemies.remove(d)
 
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
         sql = Sql_Injection()
         self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button]
+        self.current_wave = self.number_enemies[self.round][:]
 
         while self.state == GameState.game_playing:
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
-            sql.draw(game.screen)
-            sql.draw_health_bar(game.screen)
-            sql.move()
+            # sql.draw(game.screen)
+            # sql.draw_health_bar(game.screen)
+            # sql.move()
             clock.tick(DESIRED_FPS)
             self.renderThings()
                 
