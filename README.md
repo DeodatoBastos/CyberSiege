@@ -1,7 +1,7 @@
 # CyberSiege
 A tower defense game about cyber security
 
-To install it follow the nexts steps:
+To install it follow the next's steps:
 
 1. clone this repo:
 
@@ -11,7 +11,7 @@ git clone git@github.com:DeodatoBastos/CyberSiege.git # with ssh
 ```
 
 ----------
- (Optional step): create a virtual enverioment:
+ (Optional step): create a virtual environment:
 [here](https://k0nze.dev/posts/install-pyenv-venv-vscode/#linux-debianubuntu) a useful tutorial. 
 
 ----------
