@@ -1,7 +1,6 @@
 from tower.constants import *
 from tower.states import GameState
-from tower.enemies.sql_injection import Sql_Injection
-from tower.enemies.ddos import DDOS
+from tower.enemies import Sql_Injection, DDOS
 from tower.button import Button
 from tower.resources import get_font
 from tower.towers import antivirus, firewall, twoFactorAuth, Towers
@@ -229,7 +228,6 @@ class GamePlaying(GameLoop):
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
-        sql = Sql_Injection()
         self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button]
         self.current_wave = self.number_enemies[self.round][:]
 
@@ -238,9 +236,6 @@ class GamePlaying(GameLoop):
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
-            # sql.draw(game.screen)
-            # sql.draw_health_bar(game.screen)
-            # sql.move()
             clock.tick(DESIRED_FPS)
             self.renderThings()
                 
