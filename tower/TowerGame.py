@@ -3,12 +3,11 @@ from dataclasses import dataclass, field
 from tower.constants import *
 from tower.states import GameState, StateError
 from tower.resources import *
-from tower.GameLoop import *
+from tower.loops import *
 
 # External imports
 import pygame
 from pygame.locals import *
-import os
 
 
 @dataclass
