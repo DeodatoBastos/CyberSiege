@@ -10,7 +10,7 @@ class Enemy:
         self.path_pos = 0
         self.x = self.path[0][0]
         self.y = self.path[0][1]
-        self.speed_increase = 2
+        self.speed_increase = 10
 
         self.name = None
         self.img = None

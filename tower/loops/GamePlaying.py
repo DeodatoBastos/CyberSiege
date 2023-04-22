@@ -1,3 +1,4 @@
+import os
 import time
 import random
 import pygame
@@ -11,14 +12,20 @@ from tower.map import map1
 from tower.enemies import Sql_Injection, DDOS
 from tower.towers import antivirus, firewall, twoFactorAuth, Towers
 
+play_img =  pygame.transform.scale(pygame.image.load(os.path.join("tower", "assets", "sprites", "play.png")),(32, 32))
+pause_img =  pygame.transform.scale(pygame.image.load(os.path.join("tower", "assets", "sprites", "pause.png")),(32, 32))
+
 @dataclass
 class GamePlaying(GameLoop):
 
     antivirus_button : Button
     firewall_button: Button
     twoFA_button : Button
+    action_button: Button
     allButtons : "list[Button]"
     allTowers : "list[Towers,(int,int)]"
+    is_paused : bool
+    is_playing: bool
     balance : int
     grabbing : bool
     grabbed : bool
@@ -36,7 +43,10 @@ class GamePlaying(GameLoop):
             antivirus_button = Button(image=antivirus.img,pos=(896+33,64),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             firewall_button = Button(image=firewall.img,pos=(896+33,160),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             twoFA_button = Button(image=twoFactorAuth.img,pos=(896+33,258),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
+            action_button = Button(image=play_img, pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             allButtons = [],
+            is_paused = True,
+            is_playing = False,
             allTowers = [],
             balance = 100,
             grabbing = False,
@@ -63,9 +73,16 @@ class GamePlaying(GameLoop):
             return True, (32*col_index + 16 + offset, 32*line_index + 16 + offset)
     
     def renderThings(self):
+        # render play and pause
+        if self.is_paused:
+            self.action_button = Button(image=play_img, pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
+        else:
+            self.action_button = Button(image=pause_img, pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
+
         # Rendering the buttons
         for btn in self.allButtons:
             btn.update(self.screen)
+
 
         # Render deployed towers along with a square to show they are placed
         for element in self.allTowers:
@@ -84,10 +101,9 @@ class GamePlaying(GameLoop):
             if len(self.enemies) == 0:
                 self.round += 1
                 self.current_wave = self.number_enemies[self.round]
-                # Uncomment when pause is created
-                # self.pause = True
-                # self.playPauseButton.paused = self.pause
-        else:
+                self.is_paused = True
+                self.is_playing = False
+        elif self.is_playing:
             wave_enemies = [Sql_Injection(), DDOS()]
             for x in range(len(self.current_wave)):
                 if time.time() - self.timer >= random.randrange(1,6)/3:
@@ -96,29 +112,31 @@ class GamePlaying(GameLoop):
                         self.enemies.append(wave_enemies[x])
                         self.current_wave[x] = self.current_wave[x] - 1
                         break
-        
-        for enemy in self.enemies:
-            enemy.draw(self.screen)
 
-        to_del = []
-        for en in self.enemies:
-            en.move()
-            if en.path_pos >= len(en.path) - 1:
-                to_del.append(en)
+        if not self.is_paused:
+            for enemy in self.enemies:
+                enemy.draw(self.screen)
 
-        # delete all enemies off the screen
-        for d in to_del:
-            # Remove comment when lives are implemented
-            #self.lives -= 1
-            self.enemies.remove(d)
+            to_del = []
+            for en in self.enemies:
+                en.move()
+                if en.path_pos >= len(en.path) - 1:
+                    to_del.append(en)
+
+            # delete all enemies off the screen
+            for d in to_del:
+                # Remove comment when lives are implemented
+                #self.lives -= 1
+                self.enemies.remove(d)
 
     def loop(self, game):
         self.state = game.state
         clock = pygame.time.Clock()
-        self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button]
         self.current_wave = self.number_enemies[self.round][:]
 
         while self.state == GameState.game_playing:
+            self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button, 
+                               self.action_button]
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
@@ -145,6 +163,10 @@ class GamePlaying(GameLoop):
             if (self.twoFA_button.checkForInput(mousePos)):
                 self.grabbing = True
                 self.grabbed = twoFactorAuth()
+
+            if self.action_button.checkForInput(mousePos) and not self.is_playing:
+                self.is_paused = not self.is_paused
+                self.is_playing = True
 
         elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing == True) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
