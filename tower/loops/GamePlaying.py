@@ -130,6 +130,8 @@ class GamePlaying(GameLoop):
                 self.enemies.remove(d)
 
     def loop(self, game):
+        pygame.mixer.music.load(os.path.join("tower", "assets", "audio", "music.mp3"))
+        pygame.mixer.music.play(loops=-1)
         self.state = game.state
         clock = pygame.time.Clock()
         self.current_wave = self.number_enemies[self.round][:]
