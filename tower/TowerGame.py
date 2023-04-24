@@ -15,18 +15,16 @@ class TowerGame:
 
     screen: pygame.Surface
     screen_rect: pygame.Rect
-    fullscreen: bool
     state: GameState
     game_menu: GameLoop = field(init=False, default=None)
     game_playing: GameLoop = field(init=False, default=None)
     help_options: GameLoop = field(init=False, default=None)
 
     @classmethod
-    def create(cls, fullsc=False):
+    def create(cls):
         game = cls(
             screen=None,
             screen_rect=SCREENRECT,
-            fullscreen=fullsc,
             state=GameState.initializing
         )
         game.init()
