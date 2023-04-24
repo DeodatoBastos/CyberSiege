@@ -12,8 +12,6 @@ from tower.map import map1
 from tower.enemies import Sql_Injection, DDOS
 from tower.towers import antivirus, firewall, twoFactorAuth, Towers
 
-play_img =  pygame.transform.scale(pygame.image.load(os.path.join("tower", "assets", "sprites", "play.png")),(32, 32))
-pause_img =  pygame.transform.scale(pygame.image.load(os.path.join("tower", "assets", "sprites", "pause.png")),(32, 32))
 
 @dataclass
 class GamePlaying(GameLoop):
@@ -44,7 +42,7 @@ class GamePlaying(GameLoop):
             antivirus_button = Button(image=antivirus.img,pos=(896+33,64),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             firewall_button = Button(image=firewall.img,pos=(896+33,160),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             twoFA_button = Button(image=twoFactorAuth.img,pos=(896+33,258),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
-            action_button = Button(image=play_img, pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
+            action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             allButtons = [],
             is_paused = True,
             is_playing = False,
@@ -62,7 +60,7 @@ class GamePlaying(GameLoop):
         )
         return game_playing
     
-    def validatePlacing(self,mouse_pos):
+    def validatePlacing(self, mouse_pos):
         #map mouse position to corresponding square, returns True/False + the correct (x,y) position to place the tower
         col_index = mouse_pos[0]//32
         line_index = mouse_pos[1]//32
@@ -80,9 +78,9 @@ class GamePlaying(GameLoop):
     def renderThings(self):
         # render play and pause
         if self.is_paused:
-            self.action_button = Button(image=play_img, pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
+            self.action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
         else:
-            self.action_button = Button(image=pause_img, pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
+            self.action_button = Button(image=IMAGE_SPRITES[(False, False, "pause")], pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
 
         # Rendering the buttons
         for btn in self.allButtons:
@@ -121,7 +119,7 @@ class GamePlaying(GameLoop):
                 self.is_paused = True
                 self.is_playing = False
         elif self.is_playing:
-            wave_enemies = [Sql_Injection(), DDOS()]
+            wave_enemies = [Sql_Injection(wave_level=self.round), DDOS(wave_level=self.round)]
             for x in range(len(self.current_wave)):
                 if time.time() - self.timer >= random.randrange(1,6)/3:
                     self.timer = time.time()
@@ -171,7 +169,7 @@ class GamePlaying(GameLoop):
             self.grabbing = False
             self.grabbed = None
 
-        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing == False):
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not self.grabbing):
             # check if the user click in any button
             mousePos = pygame.mouse.get_pos()
             if (self.antivirus_button.checkForInput(mousePos)):
@@ -190,7 +188,7 @@ class GamePlaying(GameLoop):
                 self.is_paused = not self.is_paused
                 self.is_playing = True
 
-        elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing == True) and self.balance >= self.grabbed.cost:
+        elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
             check, placePos = self.validatePlacing(pygame.mouse.get_pos())
             if (check):
