@@ -6,7 +6,7 @@ class Sql_Injection(Enemy):
     def __init__(self):
         super().__init__()
         self.name = "SQL Injection"
-        self.money = 1
+        self.money = 10
         self.max_health = 100
         self.health = self.max_health
         self.img = pygame.transform.scale(

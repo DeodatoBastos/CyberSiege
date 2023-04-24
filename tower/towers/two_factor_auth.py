@@ -9,7 +9,8 @@ class twoFactorAuth(Towers):
 
     def __init__(self):
         super().__init__()
-        self.damage = 5
-        self.recharge_time = 2
+        self.damage = 40
+        self.recharge_time = 60
         self.cost = 20
         self.range = 300
+        self.time = 0

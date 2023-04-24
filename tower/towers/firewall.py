@@ -9,7 +9,8 @@ class firewall(Towers):
     
     def __init__(self):
         super().__init__()
-        self.damage = 10
-        self.recharge_time = 1
+        self.damage = 50
+        self.recharge_time = 60
         self.cost = 25
         self.range = 30
+        self.time = 0

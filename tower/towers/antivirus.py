@@ -10,6 +10,7 @@ class antivirus(Towers):
     def __init__(self):
         super().__init__()
         self.damage = 30
-        self.recharge_time = 1
+        self.recharge_time = 60
         self.cost = 20
         self.range = 100
+        self.time = 0

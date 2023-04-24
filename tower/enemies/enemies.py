@@ -33,8 +33,8 @@ class Enemy:
         :return: None
         """
         length = 50
-        move_by = round(length / self.max_health)
-        health_bar = move_by * self.health
+        move_by = length / self.max_health
+        health_bar = round(move_by * self.health)
 
         pygame.draw.rect(screen, (255,0,0), (self.x-30, self.y-45, length, 10), 0)
         pygame.draw.rect(screen, (0, 255, 0), (self.x-30, self.y - 45, health_bar, 10), 0)

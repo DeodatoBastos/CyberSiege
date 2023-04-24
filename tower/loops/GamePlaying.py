@@ -34,6 +34,7 @@ class GamePlaying(GameLoop):
     round : int
     enemies : list
     timer : int
+    lives : int
 
     @classmethod
     def create(cls, screen, state):
@@ -56,7 +57,8 @@ class GamePlaying(GameLoop):
                                                 # Right now, the sequence of enemies is SQL, ddos
             round = 0,
             enemies = [],
-            timer = 0
+            timer = 0,
+            lives = 10
         )
         return game_playing
     
@@ -72,6 +74,9 @@ class GamePlaying(GameLoop):
             offset = 0
             return True, (32*col_index + 16 + offset, 32*line_index + 16 + offset)
     
+    def treat_lives(self, damage: int):
+        self.lives -= damage
+
     def renderThings(self):
         # render play and pause
         if self.is_paused:
@@ -96,6 +101,18 @@ class GamePlaying(GameLoop):
         if (self.grabbing):
             self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
         
+
+
+
+
+
+        # show money
+        menu_text = get_font(40).render(str(self.balance), True, "#ffffff")
+        menu_rect = menu_text.get_rect(center=(900, 500))
+        self.screen.blit(menu_text, menu_rect)
+
+
+
         # Generates waves
         if sum(self.current_wave) == 0:
             if len(self.enemies) == 0:
@@ -117,6 +134,10 @@ class GamePlaying(GameLoop):
             for enemy in self.enemies:
                 enemy.draw(self.screen)
 
+            for tower in self.allTowers:
+                self.enemies, new_money = tower[0].hit_enemies(tower[1], self.enemies)
+                self.balance += new_money
+
             to_del = []
             for en in self.enemies:
                 en.move()
@@ -125,8 +146,7 @@ class GamePlaying(GameLoop):
 
             # delete all enemies off the screen
             for d in to_del:
-                # Remove comment when lives are implemented
-                #self.lives -= 1
+                self.treat_lives(1)
                 self.enemies.remove(d)
 
     def loop(self, game):
