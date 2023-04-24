@@ -7,7 +7,6 @@ class Towers:
     time: int
     cost : int
     range : int 
-    #Tem que ter um script pro ataque tbm
 
     def distance(self, pos, en_x, en_y):
         return math.dist(pos, [en_x, en_y])
