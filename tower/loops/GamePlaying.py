@@ -75,10 +75,10 @@ class GamePlaying(GameLoop):
 
     def renderThings(self):
         # render play and pause
-        if self.is_paused:
-            self.action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
-        else:
-            self.action_button = Button(image=IMAGE_SPRITES[(False, False, "pause")], pos=(896+32, 580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff")
+        button_name = "play" if self.is_paused  else "pause"
+        self.action_button = Button(image=IMAGE_SPRITES[(False, False, button_name)],
+                                    pos=(896+32, 580), text_input="", font=get_font(1),
+                                    base_color="#d7fcd4", hovering_color="ffffff")
 
         # Rendering the buttons
         for btn in self.allButtons:
@@ -160,7 +160,7 @@ class GamePlaying(GameLoop):
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
             clock.tick(DESIRED_FPS)
             self.renderThings()
-                
+
     def handle_event(self, event, game):
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 3):
             self.grabbing = False
