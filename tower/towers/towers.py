@@ -33,7 +33,7 @@ class Towers:
                 break
         return enemies, money
 
-    def sell(self):
+    def sell_value(self):
         return int(0.9 * self.cost * ((1.6 ** self.level) - 1) / 0.6)
 
     def level_color(self):

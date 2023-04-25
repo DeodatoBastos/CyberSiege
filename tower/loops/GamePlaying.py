@@ -83,7 +83,7 @@ class GamePlaying(GameLoop):
         line_index = self.pressed_tower[1][1] // 32
 
         self.board.placeable[line_index][col_index] = 1
-        self.balance += self.pressed_tower[0].sell()
+        self.balance += self.pressed_tower[0].sell_value()
         self.allTowers.remove(self.pressed_tower)
         self.tower_is_pressed = False
 
@@ -112,6 +112,30 @@ class GamePlaying(GameLoop):
 
         if self.tower_is_pressed:
             self.delete_button.update(self.screen)
+
+            text_input = f"       Tower\n" + \
+                         f"  Damage: {self.pressed_tower[0].damage}\n" + \
+                         f"  Range: {self.pressed_tower[0].range}\n" + \
+                         f"  Recharge time: {self.pressed_tower[0].recharge_time}\n" + \
+                         f"  Upgrade Price:{self.pressed_tower[0].upgrade_cost}\n" + \
+                         f"  Sell Value:{self.pressed_tower[0].sell_value()}"
+            lines = text_input.split("\n")
+            x_center = self.pressed_tower[1][0]
+            y_center = self.pressed_tower[1][1]
+
+            texts = [get_font(10).render(line, True, "black") for line in lines]
+            color = "#FADA5E"
+            square = pygame.Surface((200, 120)).convert_alpha()
+            square.fill(color)
+
+            shadow_surface = pygame.Surface((203, 124)).convert_alpha()
+            shadow_surface.fill((0, 0, 0))
+            self.screen.blit(shadow_surface, (x_center - 220, y_center - 70, 200, 120))
+
+            self.screen.blit(square, (x_center - 220, y_center - 70, 200, 120))
+            for i, text in enumerate(texts):
+                self.screen.blit(text, (x_center - 230, y_center - 60 + 16 * i, 16, 16))
+
             if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
                 self.upgrade_button.update(self.screen)
 
