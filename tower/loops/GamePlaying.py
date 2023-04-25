@@ -10,7 +10,7 @@ from tower.resources import get_font
 from dataclasses import dataclass
 from tower.map import map1
 from tower.enemies import Sql_Injection, DDOS, Malware, Trojan
-from tower.towers import antivirus, firewall, twoFactorAuth, Towers
+from tower.towers import antivirus, firewall,vpn, twoFactorAuth, Towers
 
 
 @dataclass
@@ -19,6 +19,7 @@ class GamePlaying(GameLoop):
     antivirus_button : Button
     firewall_button: Button
     twoFA_button : Button
+    vpn_button : Button
     action_button: Button
     upgrade_button: Button
     delete_button: Button
@@ -45,7 +46,8 @@ class GamePlaying(GameLoop):
             state = state,
             antivirus_button = Button(image=antivirus.img,pos=(896+33,64),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             firewall_button = Button(image=firewall.img,pos=(896+33,160),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
-            twoFA_button = Button(image=twoFactorAuth.img,pos=(896+33,258),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
+            twoFA_button = Button(image=twoFactorAuth.img,pos=(896+33,256),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
+            vpn_button =  Button(image=vpn.img,pos=(896+33,352),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             upgrade_button = None,
             delete_button = None,
@@ -188,15 +190,15 @@ class GamePlaying(GameLoop):
                 self.enemies.remove(d)
 
     def loop(self, game):
-        # pygame.mixer.music.load(os.path.join("tower", "assets", "audio", "music.mp3"))
-        # pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.load(os.path.join("tower", "assets", "audio", "music.mp3"))
+        pygame.mixer.music.play(loops=-1)
         self.state = game.state
         clock = pygame.time.Clock()
         self.current_wave = self.number_enemies[self.round][:]
 
         while self.state == GameState.game_playing:
             self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button,
-                               self.action_button]
+                               self.action_button, self.vpn_button]
             self.handle_events(game)
             pygame.display.flip()
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
@@ -223,6 +225,10 @@ class GamePlaying(GameLoop):
             if (self.twoFA_button.checkForInput(mousePos)):
                 self.grabbing = True
                 self.grabbed = twoFactorAuth()
+            
+            if (self.vpn_button.checkForInput(mousePos)):
+                self.grabbing = True
+                self.grabbed = vpn()
 
             if self.action_button.checkForInput(mousePos) and not self.enemies:
                 self.is_paused = not self.is_paused

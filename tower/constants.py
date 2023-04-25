@@ -10,6 +10,7 @@ SPRITES = {
     "antivirus": "antivirus.png",
     "firewall": "firewall.png",
     "2FA": "2FA.png",
+    "vpn": "vpn.png",
     "ddos": "ddos.png",
     "sql_injection": "sql_injection.png",
     "malware": "malware.png",
