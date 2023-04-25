@@ -22,6 +22,7 @@ class GamePlaying(GameLoop):
     action_button: Button
     upgrade_button: Button
     delete_button: Button
+    close_button: Button
     allButtons : "list[Button]"
     allTowers : "list[Towers,(int,int)]"
     is_paused : bool
@@ -48,6 +49,7 @@ class GamePlaying(GameLoop):
             action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             upgrade_button = None,
             delete_button = None,
+            close_button = None,
             allButtons = [],
             is_paused = False,
             allTowers = [],
@@ -113,6 +115,7 @@ class GamePlaying(GameLoop):
         if self.tower_is_pressed:
             self.delete_button.update(self.screen)
 
+            # render selected tower's info
             text_input = f"       Tower\n" + \
                          f"  Damage: {self.pressed_tower[0].damage}\n" + \
                          f"  Range: {self.pressed_tower[0].range}\n" + \
@@ -129,13 +132,14 @@ class GamePlaying(GameLoop):
             square.fill(color)
 
             shadow_surface = pygame.Surface((203, 124)).convert_alpha()
-            shadow_surface.fill((0, 0, 0))
+            shadow_surface.fill((0, 0, 0, 220))
             self.screen.blit(shadow_surface, (x_center - 220, y_center - 70, 200, 120))
 
             self.screen.blit(square, (x_center - 220, y_center - 70, 200, 120))
             for i, text in enumerate(texts):
                 self.screen.blit(text, (x_center - 230, y_center - 60 + 16 * i, 16, 16))
 
+            self.close_button.update(self.screen)
             if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
                 self.upgrade_button.update(self.screen)
 
@@ -234,9 +238,11 @@ class GamePlaying(GameLoop):
                     self.pressed_tower = element
                     color = "black"
                     upgrade_img = pygame.transform.scale(IMAGE_SPRITES[(False, False, "green")], (24, 24))
-                    trash_img = pygame.transform.scale(IMAGE_SPRITES[(False, False, "red")], (24, 24))
-                    self.upgrade_button = Button(upgrade_img, (x_center + 32, y_center - 16, 32, 32), "+", get_font(15), color, color)
-                    self.delete_button = Button(trash_img, (x_center + 32, y_center + 16, 32, 32), "-", get_font(15), color, color)
+                    delete_img = pygame.transform.scale(IMAGE_SPRITES[(False, False, "red")], (24, 24))
+                    close_img = pygame.transform.scale(IMAGE_SPRITES[(False, False, "red")], (16, 16))
+                    self.upgrade_button = Button(upgrade_img, (x_center + 32, y_center - 16, 24, 24), "+", get_font(15), color, color)
+                    self.delete_button = Button(delete_img, (x_center + 32, y_center + 16, 24, 24), "-", get_font(15), color, color)
+                    self.close_button = Button(close_img, (x_center - 210, y_center - 60, 16, 16), "x", get_font(10), color, color)
 
             if self.tower_is_pressed:
                 if self.upgrade_button.checkForInput(mousePos) and self.pressed_tower[0].is_upgradable(self.balance):
@@ -245,6 +251,9 @@ class GamePlaying(GameLoop):
 
                 if self.delete_button.checkForInput(mousePos):
                    self.handle_tower_deletion()
+
+                if self.close_button.checkForInput(mousePos):
+                    self.tower_is_pressed = False
 
         elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_LEFT and self.grabbing) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
