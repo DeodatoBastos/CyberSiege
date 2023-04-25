@@ -14,3 +14,4 @@ class twoFactorAuth(Towers):
         self.cost = 20
         self.range = 300
         self.time = 0
+        self.upgrade_cost = int(self.cost * 1.60)

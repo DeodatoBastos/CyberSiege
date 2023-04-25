@@ -14,3 +14,4 @@ class firewall(Towers):
         self.cost = 25
         self.range = 30
         self.time = 0
+        self.upgrade_cost = int(self.cost * 1.60)

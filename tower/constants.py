@@ -16,6 +16,8 @@ SPRITES = {
     "menu": "menu.png",
     "play": "Play.png",
     "pause": "Pause.png",
+    "red": "red_button.png",
+    "green": "green_button.png",
 }
 
 IMAGE_SPRITES = {}

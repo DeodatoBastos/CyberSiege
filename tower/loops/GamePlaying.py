@@ -20,12 +20,16 @@ class GamePlaying(GameLoop):
     firewall_button: Button
     twoFA_button : Button
     action_button: Button
+    upgrade_button: Button
+    delete_button: Button
     allButtons : "list[Button]"
     allTowers : "list[Towers,(int,int)]"
     is_paused : bool
     balance : int
     grabbing : bool
     grabbed : bool
+    tower_is_pressed: bool
+    pressed_tower: bool
     board : map1
     number_enemies : list
     round : int
@@ -42,12 +46,16 @@ class GamePlaying(GameLoop):
             firewall_button = Button(image=firewall.img,pos=(896+33,160),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             twoFA_button = Button(image=twoFactorAuth.img,pos=(896+33,258),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
+            upgrade_button = None,
+            delete_button = None,
             allButtons = [],
             is_paused = False,
             allTowers = [],
             balance = 100,
             grabbing = False,
             grabbed = False,
+            tower_is_pressed = False,
+            pressed_tower = None,
             board = map1(),
             number_enemies = [[10, 5], [20, 10], [30, 20]], # Each row is a round. Each column is the quantity of enemies
                                                 # Right now, the sequence of enemies is SQL, ddos
@@ -84,30 +92,25 @@ class GamePlaying(GameLoop):
         for btn in self.allButtons:
             btn.update(self.screen)
 
-
         # Render deployed towers along with a square to show they are placed
         for element in self.allTowers:
-            square = pygame.Surface((32,32))
-            square = square.convert_alpha()
-            square.fill((100,255,100,128))
+            square = pygame.Surface((32,32)).convert_alpha()
+            square.fill((100, 255, 100, 128))
             self.screen.blit(square,(element[1][0]-16,element[1][1]-16,32,32))
             self.screen.blit(pygame.transform.scale(element[0].img, (32,32)), (element[1][0] - 16, element[1][1] - 16))
+
+        if self.tower_is_pressed:
+            self.upgrade_button.update(self.screen)
+            self.delete_button.update(self.screen)
 
         # while grabbing something, render it at mouse position each frame
         if (self.grabbing):
             self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
-        
-
-
-
-
 
         # show money
         menu_text = get_font(40).render(str(self.balance), True, "#ffffff")
         menu_rect = menu_text.get_rect(center=(900, 500))
         self.screen.blit(menu_text, menu_rect)
-
-
 
         # Generates waves
         if sum(self.current_wave) == 0:
@@ -145,14 +148,14 @@ class GamePlaying(GameLoop):
                 self.enemies.remove(d)
 
     def loop(self, game):
-        pygame.mixer.music.load(os.path.join("tower", "assets", "audio", "music.mp3"))
-        pygame.mixer.music.play(loops=-1)
+        # pygame.mixer.music.load(os.path.join("tower", "assets", "audio", "music.mp3"))
+        # pygame.mixer.music.play(loops=-1)
         self.state = game.state
         clock = pygame.time.Clock()
         self.current_wave = self.number_enemies[self.round][:]
 
         while self.state == GameState.game_playing:
-            self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button, 
+            self.allButtons = [self.antivirus_button, self.firewall_button, self.twoFA_button,
                                self.action_button]
             self.handle_events(game)
             pygame.display.flip()
@@ -162,11 +165,11 @@ class GamePlaying(GameLoop):
             self.renderThings()
 
     def handle_event(self, event, game):
-        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 3):
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_RIGHT):
             self.grabbing = False
             self.grabbed = None
 
-        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not self.grabbing):
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_LEFT and not self.grabbing):
             # check if the user click in any button
             mousePos = pygame.mouse.get_pos()
             if (self.antivirus_button.checkForInput(mousePos)):
@@ -184,7 +187,30 @@ class GamePlaying(GameLoop):
             if self.action_button.checkForInput(mousePos) and not self.enemies:
                 self.is_paused = not self.is_paused
 
-        elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing) and self.balance >= self.grabbed.cost:
+            for element in self.allTowers:
+                x_center = element[1][0]
+                y_center = element[1][1]
+                tower_btn = Button(pygame.transform.scale(element[0].img, (32, 32)), (x_center, y_center), "", get_font(0), "red", "red")
+
+                if tower_btn.checkForInput(mousePos):
+                    self.tower_is_pressed = (not self.tower_is_pressed) or (element is not self.pressed_tower)
+                    self.pressed_tower = element
+                    color = "black"
+                    upgrade_img = pygame.transform.scale(IMAGE_SPRITES[(False, False, "green")], (24, 24))
+                    trash_img = pygame.transform.scale(IMAGE_SPRITES[(False, False, "red")], (24, 24))
+                    self.upgrade_button = Button(upgrade_img, (x_center + 32, y_center - 16, 32, 32), "+", get_font(15), color, color)
+                    self.delete_button = Button(trash_img, (x_center + 32, y_center + 16, 32, 32), "-", get_font(15), color, color)
+
+            if self.tower_is_pressed:
+                if self.upgrade_button.checkForInput(mousePos) and self.balance >= self.pressed_tower[0].upgrade_cost:
+                    self.pressed_tower[0].upgrade()
+
+                if self.delete_button.checkForInput(mousePos):
+                    self.balance += self.pressed_tower[0].sell()
+                    self.allTowers.remove(self.pressed_tower)
+                    self.tower_is_pressed = False
+
+        elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_LEFT and self.grabbing) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
             check, placePos = self.validatePlacing(pygame.mouse.get_pos())
             if (check):
