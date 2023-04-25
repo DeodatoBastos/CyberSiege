@@ -105,43 +105,11 @@ class GamePlaying(GameLoop):
 
         # Render deployed towers along with a square to show they are placed
         for element in self.allTowers:
-            color = element[0].level_color()
-            square = pygame.Surface((32,32)).convert_alpha()
-            square.fill(color)
-            self.screen.blit(square, (element[1][0] - 16, element[1][1] - 16, 32, 32))
-            self.screen.blit(pygame.transform.scale(element[0].img, (32, 32)),
-                             (element[1][0] - 16, element[1][1] - 16))
-
-        if self.tower_is_pressed:
-            self.delete_button.update(self.screen)
-
-            # render selected tower's info
-            text_input = f"       Tower\n" + \
-                         f"  Damage: {self.pressed_tower[0].damage}\n" + \
-                         f"  Range: {self.pressed_tower[0].range}\n" + \
-                         f"  Recharge time: {self.pressed_tower[0].recharge_time}\n" + \
-                         f"  Upgrade Price:{self.pressed_tower[0].upgrade_cost}\n" + \
-                         f"  Sell Value:{self.pressed_tower[0].sell_value()}"
-            lines = text_input.split("\n")
-            x_center = self.pressed_tower[1][0]
-            y_center = self.pressed_tower[1][1]
-
-            texts = [get_font(10).render(line, True, "black") for line in lines]
-            color = "#FADA5E"
-            square = pygame.Surface((200, 120)).convert_alpha()
-            square.fill(color)
-
-            shadow_surface = pygame.Surface((203, 124)).convert_alpha()
-            shadow_surface.fill((0, 0, 0, 220))
-            self.screen.blit(shadow_surface, (x_center - 220, y_center - 70, 200, 120))
-
-            self.screen.blit(square, (x_center - 220, y_center - 70, 200, 120))
-            for i, text in enumerate(texts):
-                self.screen.blit(text, (x_center - 230, y_center - 60 + 16 * i, 16, 16))
-
-            self.close_button.update(self.screen)
-            if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
-                self.upgrade_button.update(self.screen)
+            square = pygame.Surface((32,32))
+            square = square.convert_alpha()
+            square.fill((100,255,100,100))
+            self.screen.blit(square,(element[1][0]-16,element[1][1]-16,32,32))
+            self.screen.blit(pygame.transform.scale(element[0].img, (32,32)), (element[1][0] - 16, element[1][1] - 16))
 
         # while grabbing something, render it at mouse position each frame
         if (self.grabbing):
@@ -174,7 +142,7 @@ class GamePlaying(GameLoop):
                 enemy.draw(self.screen)
 
             for tower in self.allTowers:
-                self.enemies, new_money = tower[0].hit_enemies(tower[1], self.enemies)
+                self.enemies, new_money = tower[0].hit_enemies(self.screen,tower[1], self.enemies)
                 self.balance += new_money
 
             to_del = []

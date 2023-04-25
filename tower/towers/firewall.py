@@ -15,3 +15,5 @@ class firewall(Towers):
         self.range = 30
         self.time = 0
         self.upgrade_cost = int(self.cost * 1.60)
+        self.last_bullet = None
+        self.bullet_color = (255,0,0) #RED

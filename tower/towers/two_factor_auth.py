@@ -15,3 +15,5 @@ class twoFactorAuth(Towers):
         self.range = 300
         self.time = 0
         self.upgrade_cost = int(self.cost * 1.60)
+        self.last_bullet = None
+        self.bullet_color = (0,255,0) #GREEN
