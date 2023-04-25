@@ -181,7 +181,7 @@ class GamePlaying(GameLoop):
                 self.grabbing = True
                 self.grabbed = twoFactorAuth()
 
-            if self.action_button.checkForInput(mousePos):
+            if self.action_button.checkForInput(mousePos) and not self.enemies:
                 self.is_paused = not self.is_paused
 
         elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing) and self.balance >= self.grabbed.cost:
