@@ -9,7 +9,7 @@ from tower.button import Button
 from tower.resources import get_font
 from dataclasses import dataclass
 from tower.map import map1
-from tower.enemies import Sql_Injection, DDOS
+from tower.enemies import Sql_Injection, DDOS, Malware, Trojan
 from tower.towers import antivirus, firewall, twoFactorAuth, Towers
 
 
@@ -59,8 +59,8 @@ class GamePlaying(GameLoop):
             tower_is_pressed = False,
             pressed_tower = None,
             board = map1(),
-            number_enemies = [[10, 5], [20, 10], [30, 20]], # Each row is a round. Each column is the quantity of enemies
-                                                # Right now, the sequence of enemies is SQL, ddos
+            number_enemies = [[10, 5, 0 , 0], [20, 10, 5, 2], [30, 20, 10, 5], [50, 30, 15, 7]], # Each row is a round. Each column is the quantity of enemies
+                                                # Right now, the sequence of enemies is SQL, ddos, malware, trojan
             round = 0,
             enemies = [],
             timer = 0,
@@ -128,7 +128,7 @@ class GamePlaying(GameLoop):
                 self.is_paused = True
 
         elif not self.is_paused:
-            wave_enemies = [Sql_Injection(wave_level=self.round), DDOS(wave_level=self.round)]
+            wave_enemies = [Sql_Injection(self.round), DDOS(self.round), Malware(self.round), Trojan(self.round)]
             for x in range(len(self.current_wave)):
                 if time.time() - self.timer >= random.randrange(1,6)/3:
                     self.timer = time.time()

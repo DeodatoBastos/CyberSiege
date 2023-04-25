@@ -55,7 +55,7 @@ class Towers:
     def upgrade(self):
         self.level += 1
         self.damage *= int((1.50) ** self.level)
-        self.recharge_time *= int((0.95) ** self.level)
+        self.recharge_time = int( self.recharge_time * (0.95) ** self.level)
         self.range *= int((1.15) ** self.level)
         self.upgrade_cost *= int((1.60) ** self.level)
 

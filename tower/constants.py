@@ -12,6 +12,8 @@ SPRITES = {
     "2FA": "2FA.png",
     "ddos": "ddos.png",
     "sql_injection": "sql_injection.png",
+    "malware": "malware.png",
+    "trojan": "trojan.png",
     "map01": "map01.png",
     "menu": "menu.png",
     "play": "Play.png",
