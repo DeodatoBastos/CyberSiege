@@ -21,6 +21,8 @@ SPRITES = {
     "pause": "Pause.png",
     "red": "red_button.png",
     "green": "green_button.png",
+    "heart": "heart.png",
+    "coin": "GoldCoin.png",
 }
 
 IMAGE_SPRITES = {}

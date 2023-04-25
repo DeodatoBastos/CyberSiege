@@ -53,7 +53,7 @@ class GamePlaying(GameLoop):
             delete_button = None,
             close_button = None,
             allButtons = [],
-            is_paused = False,
+            is_paused = True,
             allTowers = [],
             balance = 100,
             grabbing = False,
@@ -149,9 +149,17 @@ class GamePlaying(GameLoop):
             self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
 
         # show money
-        menu_text = get_font(40).render(str(self.balance), True, "#ffffff")
-        menu_rect = menu_text.get_rect(center=(900, 500))
-        self.screen.blit(menu_text, menu_rect)
+        self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, "coin")],
+                                                (32, 32)), (120, 563, 32, 32))
+        coin_text = get_font(30).render(str(self.balance), True, "#ffffff")
+        coin_rect = coin_text.get_rect(center=(70, 580))
+        self.screen.blit(coin_text, coin_rect)
+
+        self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, "heart")],
+                                                (64, 64)), (830, 277, 64, 64))
+        coin_text = get_font(30).render(str(self.lives), True, "#ffffff")
+        coin_rect = coin_text.get_rect(center=(800, 315))
+        self.screen.blit(coin_text, coin_rect)
 
         # Generates waves
         if sum(self.current_wave) == 0:
@@ -205,6 +213,12 @@ class GamePlaying(GameLoop):
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
             clock.tick(DESIRED_FPS)
             self.renderThings()
+
+            if self.lives <= 0:
+                print("You Lose!")
+
+            if self.round >= len(self.number_enemies):
+                print("You Win!")
 
     def handle_event(self, event, game):
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_RIGHT):
