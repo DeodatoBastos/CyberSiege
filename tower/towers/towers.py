@@ -1,6 +1,6 @@
 import math
 import pygame
-from constants import DESIRED_FPS
+from tower.constants import DESIRED_FPS
 
 class Towers:
     damage: int
@@ -77,10 +77,7 @@ class Towers:
         rect1 = img1.get_rect()
         rect1.center = rect0.center
         self.last_bullet = [img1,rect1]
-        print(angle)
-        print(pos)
-        print((en_x,en_y))
-    
+
     def decrease_transparency(self, speed):
         if (self.last_bullet == None):
             return
@@ -88,7 +85,3 @@ class Towers:
             self.last_bullet[0].set_alpha(self.last_bullet[0].get_alpha() - speed)
         else:
             self.last_bullet[0].set_alpha(0)
-            
-    
-    
-    
