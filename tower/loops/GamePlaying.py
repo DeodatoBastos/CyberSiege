@@ -23,7 +23,6 @@ class GamePlaying(GameLoop):
     allButtons : "list[Button]"
     allTowers : "list[Towers,(int,int)]"
     is_paused : bool
-    is_playing: bool
     balance : int
     grabbing : bool
     grabbed : bool
@@ -44,8 +43,7 @@ class GamePlaying(GameLoop):
             twoFA_button = Button(image=twoFactorAuth.img,pos=(896+33,258),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             action_button = Button(image=IMAGE_SPRITES[(False, False, "play")], pos=(896+32,580),text_input="",font=get_font(1),base_color="#d7fcd4", hovering_color="ffffff"),
             allButtons = [],
-            is_paused = True,
-            is_playing = False,
+            is_paused = False,
             allTowers = [],
             balance = 100,
             grabbing = False,
@@ -117,8 +115,7 @@ class GamePlaying(GameLoop):
                 self.round += 1
                 self.current_wave = self.number_enemies[self.round]
                 self.is_paused = True
-                self.is_playing = False
-        elif self.is_playing:
+        elif not self.is_paused:
             wave_enemies = [Sql_Injection(wave_level=self.round), DDOS(wave_level=self.round)]
             for x in range(len(self.current_wave)):
                 if time.time() - self.timer >= random.randrange(1,6)/3:
@@ -184,9 +181,8 @@ class GamePlaying(GameLoop):
                 self.grabbing = True
                 self.grabbed = twoFactorAuth()
 
-            if self.action_button.checkForInput(mousePos) and not self.is_playing:
+            if self.action_button.checkForInput(mousePos):
                 self.is_paused = not self.is_paused
-                self.is_playing = True
 
         elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.grabbing) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
