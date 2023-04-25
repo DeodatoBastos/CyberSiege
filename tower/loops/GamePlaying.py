@@ -65,19 +65,28 @@ class GamePlaying(GameLoop):
             lives = 10
         )
         return game_playing
-    
+
     def validatePlacing(self, mouse_pos):
         #map mouse position to corresponding square, returns True/False + the correct (x,y) position to place the tower
-        col_index = mouse_pos[0]//32
-        line_index = mouse_pos[1]//32
+        col_index = mouse_pos[0] // 32
+        line_index = mouse_pos[1] // 32
         if self.board.placeable[line_index][col_index] == 0:
             return False, None
         
         else:
             self.board.placeable[line_index][col_index] = 0
             offset = 0
-            return True, (32*col_index + 16 + offset, 32*line_index + 16 + offset)
-    
+            return True, (32 * col_index + 16 + offset, 32 * line_index + 16 + offset)
+
+    def handle_tower_deletion(self):
+        col_index = self.pressed_tower[1][0] // 32
+        line_index = self.pressed_tower[1][1] // 32
+
+        self.board.placeable[line_index][col_index] = 1
+        self.balance += self.pressed_tower[0].sell()
+        self.allTowers.remove(self.pressed_tower)
+        self.tower_is_pressed = False
+
     def treat_lives(self, damage: int):
         self.lives -= damage
 
@@ -94,14 +103,17 @@ class GamePlaying(GameLoop):
 
         # Render deployed towers along with a square to show they are placed
         for element in self.allTowers:
+            color = element[0].level_color()
             square = pygame.Surface((32,32)).convert_alpha()
-            square.fill((100, 255, 100, 128))
-            self.screen.blit(square,(element[1][0]-16,element[1][1]-16,32,32))
-            self.screen.blit(pygame.transform.scale(element[0].img, (32,32)), (element[1][0] - 16, element[1][1] - 16))
+            square.fill(color)
+            self.screen.blit(square, (element[1][0] - 16, element[1][1] - 16, 32, 32))
+            self.screen.blit(pygame.transform.scale(element[0].img, (32, 32)),
+                             (element[1][0] - 16, element[1][1] - 16))
 
         if self.tower_is_pressed:
-            self.upgrade_button.update(self.screen)
             self.delete_button.update(self.screen)
+            if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
+                self.upgrade_button.update(self.screen)
 
         # while grabbing something, render it at mouse position each frame
         if (self.grabbing):
@@ -118,6 +130,7 @@ class GamePlaying(GameLoop):
                 self.round += 1
                 self.current_wave = self.number_enemies[self.round]
                 self.is_paused = True
+
         elif not self.is_paused:
             wave_enemies = [Sql_Injection(wave_level=self.round), DDOS(wave_level=self.round)]
             for x in range(len(self.current_wave)):
@@ -202,13 +215,12 @@ class GamePlaying(GameLoop):
                     self.delete_button = Button(trash_img, (x_center + 32, y_center + 16, 32, 32), "-", get_font(15), color, color)
 
             if self.tower_is_pressed:
-                if self.upgrade_button.checkForInput(mousePos) and self.balance >= self.pressed_tower[0].upgrade_cost:
+                if self.upgrade_button.checkForInput(mousePos) and self.pressed_tower[0].is_upgradable(self.balance):
+                    self.balance -= self.pressed_tower[0].upgrade_cost
                     self.pressed_tower[0].upgrade()
 
                 if self.delete_button.checkForInput(mousePos):
-                    self.balance += self.pressed_tower[0].sell()
-                    self.allTowers.remove(self.pressed_tower)
-                    self.tower_is_pressed = False
+                   self.handle_tower_deletion()
 
         elif (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_LEFT and self.grabbing) and self.balance >= self.grabbed.cost:
             # Verify if the drop is in an allowed block and drop the tower
