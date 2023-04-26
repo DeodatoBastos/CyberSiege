@@ -61,12 +61,12 @@ class GamePlaying(GameLoop):
             tower_is_pressed = False,
             pressed_tower = None,
             board = map1(),
-            number_enemies = [[10, 5, 0 , 0], [20, 10, 5, 2], [30, 20, 10, 5], [50, 30, 15, 7]], # Each row is a round. Each column is the quantity of enemies
+            number_enemies = [[1, 0, 0, 0]], #[[10, 5, 0 , 0]], [20, 10, 5, 2], [30, 20, 10, 5], [50, 30, 15, 7]], # Each row is a round. Each column is the quantity of enemies
                                                 # Right now, the sequence of enemies is SQL, ddos, malware, trojan
             round = 0,
             enemies = [],
             timer = 0,
-            lives = 10
+            lives = 1
         )
         return game_playing
 
@@ -94,7 +94,24 @@ class GamePlaying(GameLoop):
     def treat_lives(self, damage: int):
         self.lives -= damage
 
-    def renderThings(self):
+    def game_has_ended(self, game):
+        if self.lives <= 0:
+            game.set_state(GameState.game_ended)
+            game.has_won = False
+            self.state = GameState.game_ended
+
+            return True
+
+        if self.round >= len(self.number_enemies):
+            game.set_state(GameState.game_ended)
+            game.has_won = True
+            self.state = GameState.game_ended
+
+            return True
+
+        return False
+
+    def renderThings(self, game):
         # render play and pause
         button_name = "play" if self.is_paused  else "pause"
         self.action_button = Button(image=IMAGE_SPRITES[(False, False, button_name)],
@@ -144,6 +161,7 @@ class GamePlaying(GameLoop):
             self.close_button.update(self.screen)
             if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
                 self.upgrade_button.update(self.screen)
+
         # while grabbing something, render it at mouse position each frame
         if (self.grabbing):
             self.screen.blit(pygame.transform.scale(self.grabbed.img, (32,32)), (pygame.mouse.get_pos()[0] - 16, pygame.mouse.get_pos()[1] - 16))
@@ -155,6 +173,7 @@ class GamePlaying(GameLoop):
         coin_rect = coin_text.get_rect(center=(70, 580))
         self.screen.blit(coin_text, coin_rect)
 
+        # show life
         self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, "heart")],
                                                 (64, 64)), (830, 277, 64, 64))
         coin_text = get_font(30).render(str(self.lives), True, "#ffffff")
@@ -165,7 +184,8 @@ class GamePlaying(GameLoop):
         if sum(self.current_wave) == 0:
             if len(self.enemies) == 0:
                 self.round += 1
-                self.current_wave = self.number_enemies[self.round]
+                if not self.game_has_ended(game):
+                    self.current_wave = self.number_enemies[self.round]
                 self.is_paused = True
 
         elif not self.is_paused:
@@ -197,6 +217,7 @@ class GamePlaying(GameLoop):
                 self.treat_lives(1)
                 self.enemies.remove(d)
 
+
     def loop(self, game):
         pygame.mixer.music.load(os.path.join("tower", "assets", "audio", "music.mp3"))
         pygame.mixer.music.play(loops=-1)
@@ -212,13 +233,8 @@ class GamePlaying(GameLoop):
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
             clock.tick(DESIRED_FPS)
-            self.renderThings()
+            self.renderThings(game)
 
-            if self.lives <= 0:
-                print("You Lose!")
-
-            if self.round >= len(self.number_enemies):
-                print("You Win!")
 
     def handle_event(self, event, game):
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_RIGHT):
@@ -280,3 +296,7 @@ class GamePlaying(GameLoop):
             if (check):
                 self.allTowers.append([self.grabbed.__class__(), placePos])
                 self.balance -= self.grabbed.cost
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and not self.enemies:
+                self.is_paused = not self.is_paused

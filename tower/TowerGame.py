@@ -19,13 +19,16 @@ class TowerGame:
     game_menu: GameLoop = field(init=False, default=None)
     game_playing: GameLoop = field(init=False, default=None)
     help_options: GameLoop = field(init=False, default=None)
+    game_ended_menu: GameLoop = field(init=False, default=None)
+    has_won: bool
 
     @classmethod
     def create(cls):
         game = cls(
             screen=None,
             screen_rect=SCREENRECT,
-            state=GameState.initializing
+            state=GameState.initializing,
+            has_won=False
         )
         game.init()
         return game
@@ -60,6 +63,8 @@ class TowerGame:
                 self.game_playing.loop(game=self)
             elif self.state == GameState.help_options:
                 self.help_options.loop(game=self)
+            elif self.state == GameState.game_ended:
+                self.game_ended_menu.loop(game=self, has_won=self.has_won)
 
         self.quit()
 
@@ -100,6 +105,7 @@ class TowerGame:
             channels[channel_name].set_volume(1.0)
 
         self.game_menu = GameMenu.create(self.screen, GameState.main_menu)
-        self.game_playing = GamePlaying.create(screen=self.screen, state=GameState.game_playing)
+        self.game_playing = GamePlaying.create(self.screen, GameState.game_playing)
         self.help_options = HelpOptions.create(self.screen, GameState.help_options)
+        self.game_ended_menu = GameEndedMenu.create(self.screen, GameState.game_ended)
         self.set_state(GameState.initialized)
