@@ -9,10 +9,10 @@ class vpn(Towers):
     
     def __init__(self):
         super().__init__()
-        self.damage = 40
-        self.recharge_time = 270
+        self.damage = 10
+        self.recharge_time = 50
         self.cost = 100
-        self.range = 200
+        self.range = 144
         self.time = 0
         self.upgrade_cost = 125
         self.last_bullet = None
@@ -26,8 +26,8 @@ class vpn(Towers):
         else:
             factor = 1
 
-        self.damage += 20 * factor
-        self.recharge_time -= 45 * factor
-        self.upgrade_cost += 25 * factor
+        self.damage += 10 * factor
+        self.recharge_time /= 2
+        self.upgrade_cost += 100 * factor
         self.range += 10 * factor
 

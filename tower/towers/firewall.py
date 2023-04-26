@@ -9,12 +9,12 @@ class firewall(Towers):
     
     def __init__(self):
         super().__init__()
-        self.damage = 25
-        self.recharge_time = 180
-        self.cost = 75
-        self.range = 60
+        self.damage = 60
+        self.recharge_time = 120
+        self.cost = 50
+        self.range = 96
         self.time = 0
-        self.upgrade_cost = 125
+        self.upgrade_cost = 100
         self.last_bullet = None
         self.bullet_color = (255,0,0) #RED
 
@@ -24,10 +24,10 @@ class firewall(Towers):
         if self.level == len(self.level_colors):
             factor = 2
         else:
-            factor = 2
+            factor = 1
 
         self.damage += 20 * factor
-        self.recharge_time -= 27 * factor
-        self.upgrade_cost += 20 * factor
+        self.recharge_time -= 25 * factor
+        self.upgrade_cost += 120 * factor
         self.range += 10 * factor
 

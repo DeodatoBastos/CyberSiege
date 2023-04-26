@@ -3,6 +3,7 @@ import pygame
 
 class Enemy:
 
+    speed_increase : float
     def __init__ (self):
         self.width = 64
         self.height = 64
@@ -10,7 +11,7 @@ class Enemy:
         self.path_pos = 0
         self.x = self.path[0][0]
         self.y = self.path[0][1]
-        self.speed_increase = 2
+        self.speed_increase = 2.0
 
         self.name = None
         self.img = None

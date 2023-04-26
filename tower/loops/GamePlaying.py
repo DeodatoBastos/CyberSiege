@@ -61,9 +61,9 @@ class GamePlaying(GameLoop):
             tower_is_pressed = False,
             pressed_tower = None,
             board = map1(),
-            number_enemies = [[6, 4, 2 , 0], [8, 6, 4, 0], [10, 8, 6, 2], [14, 12, 10, 6],
-                              [16, 14, 12, 8], [18, 16, 14, 10], [20, 18, 16, 12],
-                              [22, 20, 18, 14], [24, 22, 20, 16]], # Each row is a round. Each column is the quantity of enemies
+            number_enemies = [[4, 4, 0 , 0], [6, 10, 2, 0], [10, 15, 6, 2], [14, 20, 10, 6],
+                              [16, 26, 12, 8], [18, 30, 14, 10], [20, 30, 16, 12],
+                              [22, 40, 18, 14], [24, 50, 20, 16]], # Each row is a round. Each column is the quantity of enemies
                                                                    # Right now, the sequence of enemies is SQL, ddos, malware, trojan
             round = 0,
             enemies = [],
@@ -90,6 +90,8 @@ class GamePlaying(GameLoop):
 
         self.board.placeable[line_index][col_index] = 1
         self.balance += self.pressed_tower[0].sell_value()
+        if (self.balance > 9999):
+            self.balance = 9999
         self.allTowers.remove(self.pressed_tower)
         self.tower_is_pressed = False
 
@@ -214,6 +216,8 @@ class GamePlaying(GameLoop):
             for tower in self.allTowers:
                 self.enemies, new_money = tower[0].hit_enemies(self.screen,tower[1], self.enemies)
                 self.balance += new_money
+                if (self.balance > 9999):
+                    self.balance = 9999
 
             to_del = []
             for en in self.enemies:
@@ -250,7 +254,6 @@ class GamePlaying(GameLoop):
             self.screen.blit(IMAGE_SPRITES[(False, False, "map01")], (0, 0))
             clock.tick(DESIRED_FPS)
             self.renderThings(game)
-
 
     def handle_event(self, event, game):
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == MOUSE_RIGHT):
