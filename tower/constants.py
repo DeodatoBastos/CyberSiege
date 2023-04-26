@@ -27,7 +27,9 @@ SPRITES = {
     "mouseleft" : "MOUSEBUTTONLEFT.png",
     "mouseright": "MOUSEBUTTONRIGHT.png",
     "tutorial01" : "tutorial01.jpg",
-    "tutorialFim" : "tutorialFim.jpg"
+    "tutorialFim" : "tutorialFim.jpg",
+    "win_game": "wallpaperflare.jpg",
+    "lose_game": "pxfuel.jpg",
 }
 
 IMAGE_SPRITES = {}

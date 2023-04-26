@@ -123,7 +123,7 @@ class GamePlaying(GameLoop):
                     (self.twoFA_button, twoFactorAuth()), (self.vpn_button, vpn())]:
 
             self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, "coin")],
-                                                (12, 12)), (btn.x_pos + 9,  btn.y_pos + 41, 12, 12))
+                                                (12, 12)), (btn.x_pos + 12,  btn.y_pos + 41, 12, 12))
             cost_text = get_font(15).render(f"{twr.cost}", True, "#b68f40")
             cost_rect = cost_text.get_rect(center=(btn.x_pos - 10, btn.y_pos + 48))
             self.screen.blit(cost_text, cost_rect)
