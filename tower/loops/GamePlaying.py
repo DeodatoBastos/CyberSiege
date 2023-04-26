@@ -95,13 +95,6 @@ class GamePlaying(GameLoop):
         self.lives -= damage
 
     def game_has_ended(self, game):
-        if self.lives <= 0:
-            game.set_state(GameState.game_ended)
-            game.has_won = False
-            self.state = GameState.game_ended
-
-            return True
-
         if self.round >= len(self.number_enemies):
             game.set_state(GameState.game_ended)
             game.has_won = True
@@ -147,9 +140,14 @@ class GamePlaying(GameLoop):
             text_input = f"       Tower\n" + \
                          f"  Damage: {self.pressed_tower[0].damage}\n" + \
                          f"  Range: {self.pressed_tower[0].range}\n" + \
-                         f"  Recharge time: {self.pressed_tower[0].recharge_time}\n" + \
-                         f"  Upgrade Price:{self.pressed_tower[0].upgrade_cost}\n" + \
-                         f"  Sell Value:{self.pressed_tower[0].sell_value()}"
+                         f"  Recharge time: {self.pressed_tower[0].recharge_time}\n"
+
+            if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
+                text_input += f"  Upgrade Price:{self.pressed_tower[0].upgrade_cost}\n" + \
+                              f"  Sell Value:{self.pressed_tower[0].sell_value()}"
+            else:
+                text_input += f"  Sell Value:{self.pressed_tower[0].sell_value()}"
+
             lines = text_input.split("\n")
             x_center = self.pressed_tower[1][0]
             y_center = self.pressed_tower[1][1]
@@ -225,6 +223,13 @@ class GamePlaying(GameLoop):
             for d in to_del:
                 self.treat_lives(1)
                 self.enemies.remove(d)
+
+                if self.lives <= 0:
+                    game.set_state(GameState.game_ended)
+                    game.has_won = False
+                    self.state = GameState.game_ended
+        
+                    return True
 
 
     def loop(self, game):

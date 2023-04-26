@@ -54,10 +54,10 @@ class Towers:
 
     def upgrade(self):
         self.level += 1
-        self.damage *= int((1.50) ** self.level)
-        self.recharge_time = int( self.recharge_time * (0.95) ** self.level)
-        self.range *= int((1.15) ** self.level)
-        self.upgrade_cost *= int((1.60) ** self.level)
+        self.damage = int(self.damage * (1.10) ** self.level)
+        self.recharge_time = int(self.recharge_time * (0.95) ** self.level)
+        self.range = int(self.recharge_time * (1.15) ** self.level)
+        self.upgrade_cost = int(self.upgrade_cost * (1.60) ** self.level)
 
     def is_upgradable(self, balance):
         return (balance >= self.upgrade_cost) and (self.level < len(self.level_colors))
