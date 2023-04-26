@@ -23,6 +23,11 @@ SPRITES = {
     "green": "green_button.png",
     "heart": "heart.png",
     "coin": "GoldCoin.png",
+    "arrowright" : "ARROWRIGHT.png",
+    "mouseleft" : "MOUSEBUTTONLEFT.png",
+    "mouseright": "MOUSEBUTTONRIGHT.png",
+    "tutorial01" : "tutorial01.jpg",
+    "tutorialFim" : "tutorialFim.jpg"
 }
 
 IMAGE_SPRITES = {}
