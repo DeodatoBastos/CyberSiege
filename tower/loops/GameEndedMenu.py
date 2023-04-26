@@ -34,15 +34,19 @@ class GameEndedMenu(GameLoop):
         if has_won:
             title_texts = ["Well done!", "You're a cybersecurity pro!"]
             image = "win_game"
+            color = "Green"
         else:
             title_texts = ["You've been hacked!"]
             image = "lose_game"
+            color = "Red"
 
         self.state = game.state
         clock = pygame.time.Clock()
         self.screen.blit(IMAGE_SPRITES[(False, False, image)], (0, 0))
         menu_texts = [get_font(35).render(title_text, True, "#b68f40") for title_text in title_texts]
         menu_rect = menu_texts[0].get_rect(center=(480, 50))
+        self.play_button.hovering_color = color
+        self.quit_button.hovering_color = color
 
         for i, menu_text in enumerate(menu_texts):
                 self.screen.blit(menu_text, (menu_rect[0] - 290 * i, menu_rect[1] + 40 * i))
