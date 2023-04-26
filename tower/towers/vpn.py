@@ -9,12 +9,12 @@ class vpn(Towers):
     
     def __init__(self):
         super().__init__()
-        self.damage = 30
+        self.damage = 40
         self.recharge_time = 270
-        self.cost = 125
+        self.cost = 100
         self.range = 200
         self.time = 0
-        self.upgrade_cost = 175
+        self.upgrade_cost = 125
         self.last_bullet = None
         self.bullet_color = (255,255,255) #WHITE
 
@@ -26,8 +26,8 @@ class vpn(Towers):
         else:
             factor = 1
 
-        self.damage += 10 * factor
+        self.damage += 20 * factor
         self.recharge_time -= 45 * factor
-        self.upgrade_cost += 50 * factor
+        self.upgrade_cost += 25 * factor
         self.range += 10 * factor
 

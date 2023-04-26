@@ -9,12 +9,12 @@ class antivirus(Towers):
     
     def __init__(self):
         super().__init__()
-        self.damage = 15
+        self.damage = 20
         self.recharge_time = 135
-        self.cost = 50
+        self.cost = 30
         self.range = 100
         self.time = 0
-        self.upgrade_cost = 100
+        self.upgrade_cost = 60
         self.last_bullet = None
         self.bullet_color = (0,0,255) #BLUE
 
@@ -26,7 +26,7 @@ class antivirus(Towers):
         else:
             factor = 1
 
-        self.damage += 10 * factor
+        self.damage += 15 * factor
         self.recharge_time -= 18 * factor
-        self.upgrade_cost += 50 * factor
+        self.upgrade_cost += 30 * factor
         self.range += 10 * factor

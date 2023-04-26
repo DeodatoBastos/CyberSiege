@@ -55,7 +55,7 @@ class GamePlaying(GameLoop):
             allButtons = [],
             is_paused = True,
             allTowers = [],
-            balance = 150,
+            balance = 250,
             grabbing = False,
             grabbed = False,
             tower_is_pressed = False,
