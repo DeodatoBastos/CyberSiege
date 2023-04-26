@@ -53,11 +53,7 @@ class Towers:
         return self.level_colors[self.level - 1]
 
     def upgrade(self):
-        self.level += 1
-        self.damage = int(self.damage * (1.10) ** self.level)
-        self.recharge_time = int(self.recharge_time * (0.95) ** self.level)
-        self.range = int(self.recharge_time * (1.15) ** self.level)
-        self.upgrade_cost = int(self.upgrade_cost * (1.60) ** self.level)
+        NotImplementedError()
 
     def is_upgradable(self, balance):
         return (balance >= self.upgrade_cost) and (self.level < len(self.level_colors))

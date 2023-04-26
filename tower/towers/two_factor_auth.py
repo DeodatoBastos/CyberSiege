@@ -9,11 +9,24 @@ class twoFactorAuth(Towers):
 
     def __init__(self):
         super().__init__()
-        self.damage = 40
-        self.recharge_time = 60
-        self.cost = 20
-        self.range = 300
+        self.damage = 25
+        self.recharge_time = 225
+        self.cost = 100
+        self.range = 150
         self.time = 0
-        self.upgrade_cost = int(self.cost * 1.60)
+        self.upgrade_cost = 150
         self.last_bullet = None
         self.bullet_color = (0,255,0) #GREEN
+
+    def upgrade(self):
+        self.level += 1
+
+        if self.level == len(self.level_colors):
+            factor = 2
+        else:
+            factor = 1
+
+        self.damage += 10 * factor
+        self.recharge_time -= 36 * factor
+        self.upgrade_cost += 50 * factor
+        self.range += 10 * factor

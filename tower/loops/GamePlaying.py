@@ -55,18 +55,20 @@ class GamePlaying(GameLoop):
             allButtons = [],
             is_paused = True,
             allTowers = [],
-            balance = 100,
+            balance = 150,
             grabbing = False,
             grabbed = False,
             tower_is_pressed = False,
             pressed_tower = None,
             board = map1(),
-            number_enemies = [[10, 5, 0 , 0], [20, 10, 5, 2], [30, 20, 10, 5], [50, 30, 15, 7]], # Each row is a round. Each column is the quantity of enemies
-                                                # Right now, the sequence of enemies is SQL, ddos, malware, trojan
+            number_enemies = [[6, 4, 2 , 0], [8, 6, 4, 0], [10, 8, 6, 2], [14, 12, 10, 6],
+                              [16, 14, 12, 8], [18, 16, 14, 10], [20, 18, 16, 12],
+                              [22, 20, 18, 14], [24, 22, 20, 16]], # Each row is a round. Each column is the quantity of enemies
+                                                                   # Right now, the sequence of enemies is SQL, ddos, malware, trojan
             round = 0,
             enemies = [],
             timer = 0,
-            lives = 10
+            lives = 30
         )
         return game_playing
 
