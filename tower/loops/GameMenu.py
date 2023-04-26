@@ -40,20 +40,41 @@ class GameMenu(GameLoop):
         menu_text = get_font(80).render("Cyber Siege", True, "#b68f40")
         menu_rect = menu_text.get_rect(center=(480, 100))
         self.screen.blit(menu_text, menu_rect)
+        moveCooldown = DESIRED_FPS * 5
+        #Variaveis pra fazer o efeito
+        counter = 0
+        moving = False
+        updater = 0
 
         while self.state == GameState.main_menu:
             mouse_pos = pygame.mouse.get_pos()
-
             self.handle_events(game)
             pygame.display.flip()
+            self.screen.blit(IMAGE_SPRITES[(False, False, "menu")], (0, 0))
             pygame.display.set_caption(f"FPS {round(clock.get_fps())}")
             clock.tick(DESIRED_FPS)
             mouse_pos = pygame.mouse.get_pos()
-
             for button in [self.play_button, self.help_button, self.quit_button]:
                 button.changeColor(mouse_pos)
                 button.update(self.screen)
+            
+            #Daqui pra baixo é a brincadeira de mexer no menu
+            if not moving:
+                counter += 1
+                self.screen.blit(menu_text, menu_rect)
+            else:
+                self.surpriseRender(menu_text,updater)
+                updater += 16
+                if (updater > 928):
+                    updater = -960
+                if (updater == 0):
+                    moving = False
+            if (counter >= moveCooldown):
+                counter = 0
+                moving = True
 
+    def surpriseRender(self,menu_text,updater):
+        self.screen.blit(menu_text, (updater + 40, 60))
 
     def handle_event(self, event, game):
         mouse_pos = pygame.mouse.get_pos()
