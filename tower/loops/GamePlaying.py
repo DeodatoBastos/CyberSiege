@@ -144,9 +144,9 @@ class GamePlaying(GameLoop):
 
             if self.pressed_tower[0].level < len(self.pressed_tower[0].level_colors):
                 text_input += f"  Upgrade Price:{self.pressed_tower[0].upgrade_cost}\n" + \
-                              f"  Sell Value:{self.pressed_tower[0].sell_value()}"
+                              f"  Resale Price:{self.pressed_tower[0].sell_value()}"
             else:
-                text_input += f"  Sell Value:{self.pressed_tower[0].sell_value()}"
+                text_input += f"  Resale Price:{self.pressed_tower[0].sell_value()}"
 
             lines = text_input.split("\n")
             x_center = self.pressed_tower[1][0]
@@ -228,7 +228,7 @@ class GamePlaying(GameLoop):
                     game.set_state(GameState.game_ended)
                     game.has_won = False
                     self.state = GameState.game_ended
-        
+
                     return True
 
 
