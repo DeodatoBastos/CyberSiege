@@ -10,7 +10,7 @@ from tower.resources import get_font
 from dataclasses import dataclass
 from tower.map import map1
 from tower.enemies import Sql_Injection, DDOS, Malware, Trojan
-from tower.towers import antivirus, firewall,vpn, twoFactorAuth, Towers
+from tower.towers import antivirus, firewall, vpn, twoFactorAuth, Towers
 
 
 @dataclass
@@ -121,6 +121,15 @@ class GamePlaying(GameLoop):
         # Rendering the buttons
         for btn in self.allButtons:
             btn.update(self.screen)
+
+        for (btn, twr) in [(self.antivirus_button, antivirus()), (self.firewall_button, firewall()),
+                    (self.twoFA_button, twoFactorAuth()), (self.vpn_button, vpn())]:
+
+            self.screen.blit(pygame.transform.scale(IMAGE_SPRITES[(False, False, "coin")],
+                                                (12, 12)), (btn.x_pos + 9,  btn.y_pos + 41, 12, 12))
+            cost_text = get_font(15).render(f"{twr.cost}", True, "#b68f40")
+            cost_rect = cost_text.get_rect(center=(btn.x_pos - 10, btn.y_pos + 48))
+            self.screen.blit(cost_text, cost_rect)
 
         # Render deployed towers along with a square to show they are placed
         for element in self.allTowers:
