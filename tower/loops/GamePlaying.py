@@ -61,12 +61,12 @@ class GamePlaying(GameLoop):
             tower_is_pressed = False,
             pressed_tower = None,
             board = map1(),
-            number_enemies = [[1, 0, 0, 0]], #[[10, 5, 0 , 0]], [20, 10, 5, 2], [30, 20, 10, 5], [50, 30, 15, 7]], # Each row is a round. Each column is the quantity of enemies
+            number_enemies = [[10, 5, 0 , 0], [20, 10, 5, 2], [30, 20, 10, 5], [50, 30, 15, 7]], # Each row is a round. Each column is the quantity of enemies
                                                 # Right now, the sequence of enemies is SQL, ddos, malware, trojan
             round = 0,
             enemies = [],
             timer = 0,
-            lives = 1
+            lives = 10
         )
         return game_playing
 

@@ -57,8 +57,6 @@ class TowerGame:
         while self.state != GameState.quitting:
             if self.state == GameState.main_menu:
                 self.game_menu.loop(game=self)
-            elif self.state == GameState.map_editing:
-                pass
             elif self.state == GameState.game_playing:
                 self.game_playing.loop(game=self)
             elif self.state == GameState.help_options:

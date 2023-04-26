@@ -5,6 +5,7 @@ from tower.states import GameState
 from tower.button import Button
 from tower.resources import get_font
 from dataclasses import dataclass
+from .GamePlaying import GamePlaying
 
 @dataclass
 class GameEndedMenu(GameLoop):
@@ -64,6 +65,7 @@ class GameEndedMenu(GameLoop):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.play_button.checkForInput(mouse_pos):
                 game.set_state(GameState.game_playing)
+                game.game_playing = GamePlaying.create(self.screen, GameState.game_playing)
                 self.state = GameState.game_playing
             if self.quit_button.checkForInput(mouse_pos):
                 game.set_state(GameState.quitting)
@@ -75,6 +77,7 @@ class GameEndedMenu(GameLoop):
                 self.state = GameState.quitting
             if event.key == pygame.K_p:
                 game.set_state(GameState.game_playing)
+                game.game_playing = GamePlaying.create(self.screen, GameState.game_playing)
                 self.state = GameState.game_playing
             if event.key == pygame.K_q:
                 game.set_state(GameState.quitting)

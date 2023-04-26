@@ -33,6 +33,3 @@ class GameLoop:
         """
         Handles a singular event, `event`.
         """
-
-class GameEditing(GameLoop):
-    pass
